@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="logo.png" alt="GameShelf" class="logo" id="logo" />
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <a href="zelda.html">La Collection Legend of Zelda</a>
+      <a href="admin.html">Ajout</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Rechercher un jeu..."
+      class="search-bar"
+    />
+    <h3>Commun</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="favori">Favoris</button>
+      <button class="filter-button" data-filter="pret">Preter</button>
+      <button class="filter-button" data-filter="dispo">Disponible</button>
+    </div>
+
+    <h3>Console</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="ps5">PS5</button>
+      <button class="filter-button" data-filter="switch">Switch</button>
+      <button class="filter-button" data-filter="nintendo">Nintendo 64</button>
+      <button class="filter-button" data-filter="nes">NES</button>
+      <button class="filter-button" data-filter="snes">SNES</button>
+      <button class="filter-button" data-filter="wii">WII</button>
+      <button class="filter-button" data-filter="u">WII U</button>
+      <button class="filter-button" data-filter="ps1">PS1</button>
+      <button class="filter-button" data-filter="ps2">PS2</button>
+    </div>
+
+    <h3>Tous</h3>
+    <div class="filters">
+      <button class="filter-button is-checked" data-filter="all">Tous</button>
+    </div>
+
+    <p
+      id="noResultsMessage"
+      style="display: none; text-align: center; margin-top: 1rem; color: #888;"
+    >
+      Aucun résultat trouvé.
+    </p>
+
+    <h2>Mes jeux</h2>
+    <div class="grid"></div>
+  </section>
+</main>
+
+<footer>GameShelf © 2025 — Suivi de collection personnel</footer>
+<script src="script-commun.js"></script>
+<script>
+  // Initialise Firebase (ajoute ta config)
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const gamesGrid = document.querySelector('.grid');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const searchInput = document.getElementById('searchInput');
+  const filterButtons = document.querySelectorAll('.filter-button');
+
+  let gamesData = []; // stocke tous les jeux chargés
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  // Fonction pour créer une carte jeu
+  function createGameCard(game, id) {
+    const div = document.createElement('div');
+    div.className =
+      (game.console || '').toLowerCase() +
+      ' card card-jeu ' +
+      (game.favorite ? 'favori ' : '') +
+      (game.status === 'Prêté' ? 'pret ' : 'dispo ');
+    div.setAttribute('data-id', id);
+    div.setAttribute('data-name', game.name.toLowerCase());
+    div.setAttribute('data-genre', game.genre.toLowerCase());
+    div.setAttribute('data-console', (game.console || '').toLowerCase());
+    div.setAttribute('data-favori', game.favorite ? 'true' : 'false');
+    div.setAttribute('data-status', game.status ? game.status.toLowerCase() : 'dispo');
+
+    div.innerHTML = `
+      <img src="${game.image}" alt="${game.name}" onerror="this.src='default-image.png';" />
+      <h3>${game.name}</h3>
+      <p>${game.genre}</p>
+      <a class="button button-card" href="jeu.html?id=${id}">+</a>
+      <span style="color:gold;position:relative;bottom:-35px;">
+        ${
+          game.favorite
+            ? '<img src="star.png" alt="Favori" style="width:60px;height:60px;vertical-align:middle;margin:0;filter: drop-shadow(0px 0px 3px yellow)">'
+            : ''
+        }
+      </span>
+    `;
+    return div;
+  }
+
+  // Charge les jeux depuis Firestore
+  db.collection('games')
+    .orderBy('obtenue', 'desc')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const game = doc.data();
+        gamesData.push({ ...game, id: doc.id });
+      });
+      displayGames();
+    });
+
+  // Affiche les jeux filtrés + recherche
+  function displayGames() {
+    gamesGrid.innerHTML = '';
+
+    // Filtrer selon filtre + recherche
+    const filteredGames = gamesData.filter((game) => {
+      // Filtre
+      if (currentFilter !== 'all') {
+        if (currentFilter === 'favori' && !game.favorite) return false;
+        else if (currentFilter === 'pret' && game.status?.toLowerCase() !== 'prêté') return false;
+        else if (currentFilter === 'dispo' && game.status?.toLowerCase() === 'prêté') return false;
+        else if (
+          !['favori', 'pret', 'dispo'].includes(currentFilter) &&
+          game.console?.toLowerCase() !== currentFilter
+        )
+          return false;
+      }
+
+      // Recherche
+      if (
+        currentSearch &&
+        !game.name.toLowerCase().includes(currentSearch) &&
+        !game.genre?.toLowerCase().includes(currentSearch)
+      )
+        return false;
+
+      return true;
+    });
+
+    // Afficher ou message aucun résultat
+    if (filteredGames.length === 0) {
+      noResultsMessage.style.display = 'block';
+    } else {
+      noResultsMessage.style.display = 'none';
+    }
+
+    // Créer et insérer les cartes
+    filteredGames.forEach((game) => {
+      const card = createGameCard(game, game.id);
+      gamesGrid.appendChild(card);
+    });
+  }
+
+  // Gestion des clics sur filtres
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('is-checked'));
+      btn.classList.add('is-checked');
+      currentFilter = btn.getAttribute('data-filter');
+      displayGames();
+    });
+  });
+
+  // Gestion de la recherche
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value.trim().toLowerCase();
+    displayGames();
+  });
+
+ 
+</script>
+</body>
+</html>
