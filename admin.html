@@ -11,6 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
 </head>
 <body>
 <header id="mainHeader">
@@ -28,7 +29,7 @@
 
 </header>
 
-<main class="section" id="adminContent" style="display:none">
+<main class="section" id="adminContent" style="display: none;">
     <h2>Ajouter ou modifier un jeu</h2>
     <form id="gameForm">
       <input type="hidden" id="gameId" />
@@ -52,7 +53,7 @@
     </form>
     <input type="text" id="searchGames" placeholder="Rechercher un jeu..." />
     <div id="gameList" class="grid-admin"></div>
-<button id="toggleGames" onclick="toggleShowMore('games')">Afficher plus</button>
+<button id="toggleGames">Afficher plus</button>
     <hr/>
     <h2>Ajouter ou modifier une console</h2>
     <form id="consoleForm">
@@ -70,16 +71,17 @@
     </form>
 <input type="text" id="searchConsoles" placeholder="Rechercher une console..." />
     <div id="consoleList" class="grid-admin"></div>
-<button id="toggleConsoles" onclick="toggleShowMore('consoles')">Afficher plus</button>
+<button id="toggleConsoles">Afficher plus</button>
     <hr />
 
   <h2>Importer vers Firebase</h2>
 <input type="file" id="jsonFile" accept=".json" />
 <div style="margin-top: 0.5rem;">
-  <button onclick="handleFileUploadTo('games')">Importer des jeux</button>
-  <button onclick="handleFileUploadTo('consoles')">Importer des consoles</button>
-  <button onclick="handleFileUploadTo('sales')">Importer des ventes</button>
-  <button onclick="handleFileUploadTo('timeline_events')">Importer des Evenement</button>
+<button id="importGames">Importer des jeux</button>
+<button id="importConsoles">Importer des consoles</button>
+<button id="importSales">Importer des ventes</button>
+<button id="importEvents">Importer des Evenements</button>
+
 </div>
 
 <hr />
@@ -89,8 +91,8 @@
   <option value="games">Jeux</option>
   <option value="consoles">Consoles</option>
 </select>
-<button onclick="exportData()">Exporter</button>
-
+<button id="exportButton">Exporter</button>
+ <hr />
  
   </main>
 <div id="authError" style="text-align: center; padding: 2rem; display:none;">
@@ -99,10 +101,10 @@
   <footer>
     GameShelf © 2025 — Suivi de collection personnel
   </footer>
-<script src="js/script-commun.js"></script>
+
 
   <script>
-
+  
    const adminUIDs = [
     "yzAfKSOC92XfIOJDoz9Zgw21vQH3"
     // Ajoutez d'autres UID admin si nécessaire
@@ -115,6 +117,7 @@
       document.getElementById('authError').style.display = 'block';
     }
   });
+
 
 
   function initAdminPage() {
@@ -311,6 +314,11 @@ document.getElementById('consoleGeneration').value = c.generation;
 
     reader.readAsText(file);
   }
+document.getElementById('importGames').addEventListener('click', () => handleFileUploadTo('games'));
+document.getElementById('importConsoles').addEventListener('click', () => handleFileUploadTo('consoles'));
+document.getElementById('importSales').addEventListener('click', () => handleFileUploadTo('sales'));
+document.getElementById('importEvents').addEventListener('click', () => handleFileUploadTo('timeline_events'));
+
 
   // === EXPORTER JSON===
   async function exportData() {
@@ -328,24 +336,9 @@ document.getElementById('consoleGeneration').value = c.generation;
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-
-  // === AFFICHER PLUS / MOINS ===
-  let showMore = {
-    games: 4,
-    consoles: 4
   };
-
-  function toggleShowMore(type) {
-  const isShowingAll = showMore[type] === Infinity;
-  showMore[type] = isShowingAll ? 4 : Infinity;
-
-  const button = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
-  button.textContent = isShowingAll ? 'Afficher plus' : 'Afficher moins';
-
-  if (type === 'games') renderGames();
-  if (type === 'consoles') renderConsoles();
-}
+document.getElementById('exportButton').addEventListener('click', exportData);
+//FILTRE
 
   function filterAndDisplay(list, container, type, renderFn) {
     const searchInput = document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}`).value.toLowerCase();
@@ -375,6 +368,26 @@ resetConsoleBtn.addEventListener('click', () => {
   consoleForm.reset();
   document.getElementById('consoleId').value = '';
 });
+
+
+  // === AFFICHER PLUS / MOINS ===
+  let showMore = {
+    games: 4,
+    consoles: 4
+  };
+  function toggleShowMore(type) {
+  const isShowingAll = showMore[type] === Infinity;
+  showMore[type] = isShowingAll ? 4 : Infinity;
+
+  const button = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  button.textContent = isShowingAll ? 'Afficher plus' : 'Afficher moins';
+
+  if (type === 'games') renderGames();
+  if (type === 'consoles') renderConsoles();
+};
+document.getElementById('toggleGames').addEventListener('click', () => toggleShowMore('games'));
+document.getElementById('toggleConsoles').addEventListener('click', () => toggleShowMore('consoles'));
+
   }
   </script>
 </body>
