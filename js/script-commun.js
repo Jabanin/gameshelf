@@ -25,8 +25,6 @@ function updateAuthUI(user) {
       authLink.innerHTML = `
         <div style="display:flex; align-items:center; gap:8px;">
           <a href="admin.html">Ajout</a>
-          <img src="${user.photoURL || 'https://via.placeholder.com/40?text=User'}" alt="Photo Profil" style="width:40px; height:40px; border-radius:50%;">
-          <a href="profil.html">${pseudo}</a>
           <button id="logout-nav-btn" style="margin-left:10px;">Déconnexion</button>
         </div>
       `;
