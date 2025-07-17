@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="js/script-commun.js"></script>
+</head>
+<script>
+  // Init Firebase (ajoute ta config ici)
+  firebase.initializeApp(firebaseConfig);
+
+  const authProfil = firebase.auth();
+  const dbProfil = firebase.firestore();
+  const storage = firebase.storage();
+
+  // Gestion de la page profil
+  window.addEventListener('DOMContentLoaded', () => {
+    const profileArea = document.getElementById('profile-area');
+    const notLoggedMsg = document.getElementById('not-logged-msg');
+    const statusMsg = document.getElementById('status-msg');
+
+    const profilePhoto = document.getElementById('profile-photo');
+    const photoInput = document.getElementById('photo-input');
+    const pseudoInput = document.getElementById('pseudo');
+    const psnInput = document.getElementById('psn');
+    const steamInput = document.getElementById('steam');
+    const nintendoInput = document.getElementById('nintendo');
+
+    const saveBtn = document.getElementById('save-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    let currentUser;
+
+    authProfil.onAuthStateChanged(async user => {
+      if (user) {
+        currentUser = user;
+        notLoggedMsg.style.display = 'none';
+        profileArea.style.display = 'block';
+
+        try {
+          const docRef = dbProfil.collection('users').doc(user.uid);
+          const docSnap = await docRef.get();
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            pseudoInput.value = data.pseudo || '';
+            psnInput.value = data.psn || '';
+            steamInput.value = data.steam || '';
+            nintendoInput.value = data.nintendo || '';
+            profilePhoto.src = data.photoURL || 'https://via.placeholder.com/80?text=User';
+          
+          }
+        } catch (error) {
+          statusMsg.style.color = 'red';
+          statusMsg.textContent = "Erreur chargement profil : " + error.message;
+        }
+
+      } else {
+        profileArea.style.display = 'none';
+        notLoggedMsg.style.display = 'block';
+      }
+    });
+
+saveBtn.addEventListener('click', async () => {
+  statusMsg.textContent = 'Sauvegarde en cours...';
+  statusMsg.style.color = 'black';
+
+  let photoURL = profilePhoto.src;
+
+  // Priorité : image URL saisie > upload > existante
+  const imageUrlInput = document.getElementById('image').value.trim();
+  
+  if (imageUrlInput) {
+    photoURL = imageUrlInput;
+    profilePhoto.src = photoURL;
+    await currentUser.updateProfile({ photoURL: photoURL });
+  } else if (photoInput.files.length > 0) {
+    const file = photoInput.files[0];
+    const storageRef = storage.ref('profilePhotos/' + currentUser.uid + '/' + file.name);
+    try {
+      await storageRef.put(file);
+      photoURL = await storageRef.getDownloadURL();
+      profilePhoto.src = photoURL;
+      await currentUser.updateProfile({ photoURL: photoURL });
+    } catch (error) {
+      statusMsg.style.color = 'red';
+      statusMsg.textContent = "Erreur upload photo : " + error.message;
+      return;
+    }
+  }
+
+  try {
+    await dbProfil.collection('users').doc(currentUser.uid).set({
+      pseudo: pseudoInput.value.trim(),
+      psn: psnInput.value.trim(),
+      steam: steamInput.value.trim(),
+      nintendo: nintendoInput.value.trim(),
+      photoURL: photoURL,
+      email: currentUser.email
+    }, { merge: true });
+
+    await currentUser.updateProfile({ displayName: pseudoInput.value.trim() });
+
+    statusMsg.style.color = 'green';
+    statusMsg.textContent = 'Profil sauvegardé !';
+  } catch (error) {
+    statusMsg.style.color = 'red';
+    statusMsg.textContent = "Erreur sauvegarde : " + error.message;
+  }
+});
+
+    logoutBtn.addEventListener('click', () => {
+      authProfil.signOut();
+      window.location.href = 'login.html';
+    });
+  });
+</script>
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="img/logo.png" alt="GameShelf" class="logo" id="logo">
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <div id="authLink"></div>
+    </nav>
+
+  </div>
+    
+</header>
+<body>
+
+
+</body>
+<section class="section">
+<h2>Mon profil</h2>
+
+<div id="profile-area" style="display:none;">
+  <img id="profile-photo" src="" alt="Photo Profil" style="width:80px; height:80px; border-radius:50%;"><br>
+<input type="url" id="image" placeholder="Image URL" />
+
+  <label>Pseudo : <input type="text" id="pseudo"></label><br><br>
+  <label>PSN : <input type="text" id="psn"></label><br><br>
+  <label>Steam : <input type="text" id="steam"></label><br><br>
+  <label>Nintendo : <input type="text" id="nintendo"></label><br><br>
+
+  <button id="save-btn">Sauvegarder</button>
+  <button id="logout-btn">Se déconnecter</button>
+
+  <p id="status-msg"></p>
+</div>
+</section>
+
+<p id="not-logged-msg">Tu dois être connecté pour voir cette page.</p>
+</body>
+</html>

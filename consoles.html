@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="js/script-commun.js"></script>
+</head>
+<body>
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="img/logo.png" alt="GameShelf" class="logo" />
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html" class="active">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <div id="authLink"></div>
+    </nav>
+  </div>
+</header>
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li><a href="index.html">Home</a></li>
+    <li>Consoles</li>
+  </ol>
+</nav>
+<main>
+  <section class="section">
+    <input type="text" id="searchInput" placeholder="Rechercher une console..." class="search-bar" />
+
+    <h3>Filtres par génération</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="1ère">1ère Génération</button>
+      <button class="filter-button" data-filter="2ème">2e Génération</button>
+      <button class="filter-button" data-filter="3ème">3e Génération</button>
+      <button class="filter-button" data-filter="4ème">4e Génération</button>
+      <button class="filter-button" data-filter="5ème">5e Génération</button>
+      <button class="filter-button" data-filter="6ème">6e Génération</button>
+      <button class="filter-button" data-filter="7ème">7e Génération</button>
+      <button class="filter-button" data-filter="8ème">8e Génération</button>
+      <button class="filter-button" data-filter="9ème">9e Génération</button>
+    </div>
+    <h3>Filtres par Type</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="salon">Salon</button>
+      <button class="filter-button" data-filter="portable">Portable</button>
+    </div>
+    <h3>Tous</h3>
+    <div class="filters">
+      <button class="filter-button is-checked" data-filter="all">Toutes</button>
+    </div>
+
+
+    <p id="noResultsMessage" style="display:none; text-align:center; margin-top:1rem; color:#888;">
+      Aucune console trouvée.
+    </p>
+
+    <h2>Mes consoles</h2>
+    <div class="grid"></div>
+  </section>
+</main>
+
+<footer>GameShelf © 2025 — Suivi de collection personnel</footer>
+<script>
+
+
+  const grid = document.querySelector('.grid');
+  const searchInput = document.getElementById('searchInput');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const filterButtons = document.querySelectorAll('.filter-button');
+
+  let consolesData = [];
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function createConsoleCard(console, id) {
+    const div = document.createElement('div');
+    div.className = 'card card-console fade-in';
+    div.setAttribute('data-generation', console.generation.toLowerCase());
+    div.setAttribute('data-name', console.name.toLowerCase());
+    div.setAttribute('data-type', console.type.toLowerCase());
+
+    div.innerHTML = `
+      <img src="${console.image}" alt="${console.name}" onerror="this.src='default-console.png';" />
+      <h3>${console.name}</h3>
+      <p>${console.type}</p>
+      <a class="button button-card" href="console.html?id=${id}">+</a>
+    `;
+    return div;
+  }
+
+  db.collection('consoles').orderBy('obtenue', 'desc').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      consolesData.push({ ...data, id: doc.id });
+    });
+    displayConsoles();
+  });
+
+  function displayConsoles() {
+    grid.innerHTML = '';
+
+    const filtered = consolesData.filter(console => {
+      const name = console.name.toLowerCase();
+      const gen = console.generation.toLowerCase();
+      const type = console.type.toLowerCase();
+      const searchMatch = name.includes(currentSearch) || gen.includes(currentSearch) || type.includes(currentSearch);
+      const filterMatch = currentFilter === 'all' || gen.startsWith(currentFilter) || type.startsWith(currentFilter);
+
+      return searchMatch && filterMatch;
+    });
+
+    if (filtered.length === 0) {
+      noResultsMessage.style.display = 'block';
+    } else {
+      noResultsMessage.style.display = 'none';
+    }
+
+    filtered.forEach(console => {
+      const card = createConsoleCard(console, console.id);
+      grid.appendChild(card);
+    });
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('is-checked'));
+      btn.classList.add('is-checked');
+      currentFilter = btn.getAttribute('data-filter');
+      displayConsoles();
+    });
+  });
+
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value.trim().toLowerCase();
+    displayConsoles();
+  });
+</script>
+</body>
+</html>

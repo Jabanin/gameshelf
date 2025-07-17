@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="js/script-commun.js"></script>
+</head>
+
+<body>
+
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="img/logo.png" alt="GameShelf" class="logo" id="logo">
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <div id="authLink"></div>
+    </nav>
+
+  </div>
+    
+</header>
+  <section class="intro">
+    <div class="intro-text">
+      <h2>À propos</h2>
+      <p>Je suis passionné de jeux vidéo et je collectionne consoles et jeux depuis des années. Ce site me permet de gérer et partager ma collection ! 🎮</p>
+      <div class="button"><a href="about.html">Voir plus</a></div>
+    </div>
+    <div class="intro-image banniere-about">
+      <img src="img/perso-pouce.png" alt="Bannière pixel art représentant un joueur avec une manette rétro">
+    </div>
+
+    
+  </section>
+<hr/>
+  <section class="section">
+    <h2>Jeux Vidéo</h2>
+    <div id="gamesPreview" class="grid"></div>
+    <div class="button"><a href="jeux.html">Voir plus</a></div>
+  </section>
+<hr/>
+  <section class="section">
+    <h2>Consoles</h2>
+    <div id="consolesPreview" class="grid"></div>
+    <div class="button"><a href="consoles.html">Voir plus</a></div>
+  </section>
+<hr/>
+<section class="intro">
+  <div class="intro-text">
+      <h2>Histoire</h2>
+      <p>Pour en savoir plus sur les dates marquantes de l'histoire ou les studios de jeux videos, je vous invite à suivre le lien</p>
+      <div class="button"><a href="histoire.html">Voir plus</a></div>
+    </div>
+    <div class="intro-image">
+      <img src="img/frise-1.png" alt="Bannière pixel art représentant un joueur avec une manette rétro">
+    </div>
+  </section>
+    
+<footer>
+    GameShelf © 2025 — Suivi de collection personnel
+  </footer>
+
+<script>
+
+    // Affichage des jeux récents
+    const gamesPreview = document.getElementById('gamesPreview');
+    db.collection("games").orderBy("year", "desc").limit(4).get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const game = doc.data();
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          
+	
+ 	<img src="${game.image}" alt="${game.name}" onerror="'">
+          <h3>${game.name}</h3>
+	<p>${game.genre}</p>
+	<!--<p>${game.rating} / 10</p>
+          <p>${game.console} • ${game.materiel}</p>
+	<p>${game.status} • ${game.borrower}</p>
+	<p>Sorti en <br>${game.year}</br></p>
+	<p>Obtenu en <br>${game.obtenue ? game.obtenue.slice(0, 4) : ''}</br></p>-->
+	
+	<a class="button button-card" href="jeu.html?id=${doc.id}">+</a>
+<span style="color:gold;position:relative;bottom:-35px;"> ${game.favorite ? '<img src="img/star.png" alt="Favori" style="width:60px;height:60px;vertical-align:middle;margin:0;filter: drop-shadow(0px 0px 3px 	yellow)">' : ''}</span>
+        `;
+        gamesPreview.appendChild(div);
+      });
+    });
+
+    // Affichage des consoles
+    const consolesPreview = document.getElementById('consolesPreview');
+    db.collection("consoles").orderBy("year", "desc").limit(4).get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const console = doc.data();
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${console.image}" alt="${console.name}" onerror="this.src='https://via.placeholder.com/150x150.png?text=Console'">
+          <h3>${console.name}</h3>
+          <p>${console.type} • ${console.year}</p>
+        `;
+        consolesPreview.appendChild(div);
+      });
+    });
+   //PROFILE
+
+
+ 
+  </script>
+ 
+</body>
+</html>

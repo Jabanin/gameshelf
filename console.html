@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK -->
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="js/script-commun.js"></script>
+
+<script src="js/breadcrumbs-console.js"></script>
+
+</head>
+
+<body>
+
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="img/logo.png" alt="GameShelf" class="logo" id="logo">
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <div id="authLink"></div>
+    </nav>
+  </div>
+</header>
+<body>
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="consoles.html">Consoles</a></li>
+  </ol>
+</nav>
+  <main class="section">
+	<div id="Titre"></div>
+	<div class="details">
+    <div id="consoleImage"></div>
+<div id="consoleDetails"></div>
+</div>
+<div class="resume">
+</div>
+
+  </main>
+<footer>
+    GameShelf © 2025 — Suivi de collection personnel
+  </footer>
+
+  <script>
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    if (id) {
+      db.collection("consoles").doc(id).get().then(doc => {
+        if (doc.exists) {
+          const console = doc.data();
+          document.getElementById("consoleDetails").innerHTML = `
+            <p><strong>Console :</strong> ${console.type}</p>
+            <p><strong>Année de sortie :</strong> ${console.year}</p>
+            <p><strong> ${console.generation} Génération</strong></p>
+           <p><strong>Année obtenue :</strong> ${console.obtenue}</p>
+          `;
+        } else {
+          document.getElementById("jeuDetails").textContent = "Jeu introuvable.";
+        }
+      });
+    }    
+if (id) {
+      db.collection("consoles").doc(id).get().then(doc => {
+        if (doc.exists) {
+          const console = doc.data();
+          document.getElementById("consoleImage").innerHTML = `
+                        <img src="${console.image}" alt="${console.name}">
+          `;
+        } else {
+          document.getElementById("jeuImage").textContent = "Jeu introuvable.";
+        }
+      });
+    }
+
+if (id) {
+      db.collection("consoles").doc(id).get().then(doc => {
+        if (doc.exists) {
+          const console = doc.data();
+          document.getElementById("Titre").innerHTML = `
+            <h2>${console.name}</h2>
+          `;
+        } else {
+          document.getElementById("Titre").textContent = "Jeu introuvable.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
