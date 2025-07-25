@@ -16,8 +16,8 @@ function initAdminPage() {
   // === GESTION JEUX ===
   const gameForm = document.getElementById('gameForm');
   const gameList = document.getElementById('gameList');
- const borrowerInput = document.getElementById('borrower');
- 
+  const borrowerInput = document.getElementById('borrower');
+
   gameForm.addEventListener('submit', async e => {
     e.preventDefault();
     const id = document.getElementById('gameId').value;
@@ -45,6 +45,7 @@ function initAdminPage() {
     }
     gameForm.reset();
     borrowerInput.style.display = 'none';
+    document.getElementById('gameId').value = '';
   });
 
   function renderGames() {
@@ -55,35 +56,38 @@ function initAdminPage() {
         const div = document.createElement('div');
         const g = game.data;
         div.className = 'card card-admin';
+
+        // Échapper les guillemets pour les attributs data
+        const safe = str => (str || '').toString().replace(/"/g, '&quot;');
+
         div.innerHTML = `
           <p>${g.name}</p>
           <button class="edit-game"
             data-id="${game.id}"
-            data-name="${g.name}"
-            data-console="${g.console}"
-            data-genre="${g.genre}"
+            data-name="${safe(g.name)}"
+            data-console="${safe(g.console)}"
+            data-genre="${safe(g.genre)}"
             data-year="${g.year || ''}"
             data-rating="${g.rating || ''}"
-            data-image="${g.image}"
-            data-statut="${g.status}"
-            data-borrower="${g.borrower}"
-            data-obtenue="${g.obtenue || ''}"
-            data-editeur="${g.editeur || ''}"
-            data-developpeur="${g.developpeur || ''}"
+            data-image="${safe(g.image)}"
+            data-statut="${safe(g.status)}"
+            data-borrower="${safe(g.borrower)}"
+            data-obtenue="${safe(g.obtenue)}"
+            data-editeur="${safe(g.editeur)}"
+            data-developpeur="${safe(g.developpeur)}"
             data-favorite="${g.favorite ? 'true' : 'false'}"
-            data-resume="${g.resume?.replace(/"/g, '&quot;') || ''}"
-            data-avis="${g.avis?.replace(/"/g, '&quot;') || ''}"
-            data-materiel="${g.materiel}"
+            data-resume="${safe(g.resume)}"
+            data-avis="${safe(g.avis)}"
+            data-materiel="${safe(g.materiel)}"
           >Modifier</button>
           <button onclick="deleteGame('${game.id}')">Supprimer</button>
         `;
         return div;
       });
     });
-    document.getElementById('searchGames').addEventListener('input', () => renderGames());
-    document.getElementById('searchConsoles').addEventListener('input', () => renderConsoles());
   }
 
+  // Listener unique pour les boutons modifier jeu
   document.addEventListener('click', e => {
     if (e.target.classList.contains('edit-game')) {
       const btn = e.target;
@@ -103,6 +107,13 @@ function initAdminPage() {
       document.getElementById('materiel').value = btn.dataset.materiel;
       document.getElementById('editeur').value = btn.dataset.editeur;
       document.getElementById('developpeur').value = btn.dataset.developpeur;
+
+      // Afficher borrower si statut le nécessite (exemple)
+      if (btn.dataset.statut === 'emprunté') {
+        borrowerInput.style.display = 'block';
+      } else {
+        borrowerInput.style.display = 'none';
+      }
     }
   });
 
@@ -137,6 +148,7 @@ function initAdminPage() {
       await db.collection('consoles').add(consoleData);
     }
     consoleForm.reset();
+    document.getElementById('consoleId').value = '';
   });
 
   function renderConsoles() {
@@ -147,27 +159,31 @@ function initAdminPage() {
         const div = document.createElement('div');
         const consoleData = c.data;
         div.className = 'card card-admin';
+
+        // Échapper les guillemets dans l'attribut onclick
+        const safe = obj => JSON.stringify(obj).replace(/"/g, '&quot;');
+
         div.innerHTML = `
           <p>${consoleData.name}</p>
-          <button onclick="editConsole('${c.id}', ${JSON.stringify(consoleData).replace(/"/g, '&quot;')})">Modifier</button>
+          <button onclick="editConsole('${c.id}', ${safe(consoleData)})">Modifier</button>
           <button onclick="deleteConsole('${c.id}')">Supprimer</button>
         `;
         return div;
       });
     });
-    document.getElementById('searchConsoles').addEventListener('input', () => renderConsoles());
   }
 
-  function editConsole(id, c) {
+  // Rendre editConsole global
+  window.editConsole = (id, c) => {
     document.getElementById('consoleId').value = id;
     document.getElementById('consoleName').value = c.name;
     document.getElementById('consoleType').value = c.type;
-    document.getElementById('consoleYear').value = c.year;
-    document.getElementById('consoleObtenue').value = c.obtenue;
-    document.getElementById('consoleGeneration').value = c.generation;
-    document.getElementById('consoleImage').value = c.image;
-    document.getElementById('consoleFabricant').value = c.fabricant;
-  }
+    document.getElementById('consoleYear').value = c.year || '';
+    document.getElementById('consoleObtenue').value = c.obtenue || '';
+    document.getElementById('consoleGeneration').value = c.generation || '';
+    document.getElementById('consoleImage').value = c.image || '';
+    document.getElementById('consoleFabricant').value = c.fabricant || '';
+  };
 
   async function deleteConsole(id) {
     if (confirm("Supprimer cette console ?")) {
@@ -177,6 +193,12 @@ function initAdminPage() {
   window.deleteConsole = deleteConsole;
 
   renderConsoles();
+
+  // === RECHERCHES ===
+  document.getElementById('searchGames').addEventListener('input', renderGames);
+  document.getElementById('searchConsoles').addEventListener('input', renderConsoles);
+}
+
 
   // === GESTION SOUHAITS ===
   const wishForm = document.getElementById('wishForm');
