@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "ca1f3520-d168-44ce-aff3-7240ae09be89",
+    "Name": "Adventure"
+  },
+  {
+    "Id": "fc866516-4356-4831-9206-f9aa66443646",
+    "Name": "Platform"
+  },
+  {
+    "Id": "ef0f8f14-75e2-4022-ab4f-77ec89ff7cb1",
+    "Name": "Racing"
+  },
+  {
+    "Id": "5972448e-a242-4694-8bb9-e97d5b6fbab1",
+    "Name": "Role-playing (RPG)"
+  },
+  {
+    "Id": "622b23f1-43bd-4930-af53-4f32044e953c",
+    "Name": "Shooter"
+  },
+  {
+    "Id": "096e5051-c5fd-4313-9616-21d67dea1c7e",
+    "Name": "Puzzle"
+  },
+  {
+    "Id": "c9080d9a-1f72-4781-9df8-6a4c29ac8463",
+    "Name": "Real Time Strategy (RTS)"
+  },
+  {
+    "Id": "69eb6de3-0f3a-476d-a47d-ee3d7ea71c0d",
+    "Name": "Card & Board Game"
+  },
+  {
+    "Id": "20ddf867-d15d-4979-a723-f049d19863a8",
+    "Name": "Hack and slash/Beat 'em up"
+  },
+  {
+    "Id": "a404b56e-73a1-47cf-9d32-87935d2ebcc7",
+    "Name": "Point-and-click"
+  },
+  {
+    "Id": "0700584c-9c73-4ea0-a538-35add9dd38dd",
+    "Name": "Turn-based strategy (TBS)"
+  },
+  {
+    "Id": "61033a1d-f947-4166-88a0-ebe9e406281e",
+    "Name": "Strategy"
+  },
+  {
+    "Id": "dd9bb7f9-aafd-4537-9dff-708e2b10ca97",
+    "Name": "Music"
+  },
+  {
+    "Id": "92aecb4a-84b8-4af5-9a2e-92e89b79ff4a",
+    "Name": "Indie"
+  },
+  {
+    "Id": "83baf300-235f-4944-98a3-ebc47e42c693",
+    "Name": "Tactical"
+  },
+  {
+    "Id": "837b70e8-bdcc-4ff4-9cde-57ae9c46e028",
+    "Name": "Fighting"
+  },
+  {
+    "Id": "6ba1b8d9-21e2-443d-9a90-79b9243d6939",
+    "Name": "Sport"
+  },
+  {
+    "Id": "468eabb6-55da-480e-ad24-da7b35da7596",
+    "Name": "Visual Novel"
+  },
+  {
+    "Id": "2fe40bf6-e050-492f-992f-81612912e7f8",
+    "Name": "Arcade"
+  },
+  {
+    "Id": "cb90c38d-3dec-4876-b798-6d8bd023d60d",
+    "Name": "Simulator"
+  }
+]

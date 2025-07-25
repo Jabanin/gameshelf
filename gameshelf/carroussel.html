@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
+</head>
+<body>
+  <h2>🎮 Jeux les plus vendus par décennie</h2>
+
+  <div class="swiper">
+    <div class="swiper-wrapper" id="swiper-wrapper">
+      <!-- Slides injectés dynamiquement -->
+    </div>
+
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Firebase SDK -->
+  <script>
+    
+    // Init Firebase
+
+
+    // Charger les données
+    async function chargerJeux() {
+      const jeuxSnapshot = await getDocs(collection(db, "jeux_par_annee"));
+      const jeux = [];
+      jeuxSnapshot.forEach(doc => jeux.push(doc.data()));
+
+      // Grouper par décennie
+      const decades = {};
+
+      jeux.forEach(jeu => {
+        const annee = jeu.annee;
+        const decade = Math.floor(annee / 10) * 10;
+
+        if (!decades[decade]) decades[decade] = [];
+        decades[decade].push(jeu);
+      });
+
+      // Générer les slides
+      const wrapper = document.getElementById('swiper-wrapper');
+
+      Object.keys(decades).sort().forEach(decade => {
+        const jeuxDansDecennie = decades[decade].sort((a, b) => a.annee - b.annee);
+
+        const slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
+
+        const titre = document.createElement('div');
+        titre.className = 'decade-title';
+        titre.textContent = `Années ${decade}`;
+        slide.appendChild(titre);
+
+        jeuxDansDecennie.forEach(jeu => {
+          const card = document.createElement('div');
+          card.className = 'year-card';
+
+          const img = document.createElement('img');
+          img.src = jeu.image || 'https://via.placeholder.com/60';
+          img.alt = jeu.titre;
+
+          const info = document.createElement('div');
+          info.className = 'year-info';
+          info.innerHTML = `
+            <strong>${jeu.annee} - ${jeu.titre}</strong>
+            <span>Console : ${jeu.console}</span>
+            <span>Ventes : ${(jeu.ventes / 1_000_000).toFixed(1)}M</span>
+          `;
+
+          card.appendChild(img);
+          card.appendChild(info);
+          slide.appendChild(card);
+        });
+
+        wrapper.appendChild(slide);
+      });
+
+      // Initialiser Swiper
+      new Swiper('.swiper', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }
+      });
+    }
+
+    chargerJeux();
+  </script>
+</body>
+</html>
