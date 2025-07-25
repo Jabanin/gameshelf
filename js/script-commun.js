@@ -1,9 +1,14 @@
-
 async function loadInclude(id, file) {
-    const res = await fetch(file);
-    const html = await res.text();
-    document.getElementById(id).innerHTML = html;
+  const res = await fetch(file);
+  const html = await res.text();
+  const container = document.getElementById(id);
+  if (container) {
+    container.innerHTML = html;
+  } else {
+    console.warn(`⚠️ Élément avec id="${id}" introuvable dans la page.`);
   }
+}
+
 
   loadInclude("header", "header.html");
   loadInclude("footer", "footer.html");
