@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="js/script-commun.js"></script>
+</head>
+<body>
+<div id="header"></div>
+  <nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li><a href="index.html">Home</a></li>
+    <li>Histoire du Jeux video</li>
+  </ol>
+</nav>
+  <section class="intro">
+    <div class="intro-image">
+      <img src="img/frise.png" alt="Bannière pixel art représentant un joueur avec une manette rétro" />
+    </div>
+    <div class="intro-text">
+      <h2>Contexte</h2>
+      <p>
+        Depuis plus de cinquante ans, le jeu vidéo est devenu l’un des médias les plus influents et créatifs de notre époque.
+        Né dans les laboratoires scientifiques des années 1950 et 60, il a progressivement conquis les salons du monde entier
+        grâce aux consoles, aux bornes d’arcade et aux ordinateurs personnels.
+      </p>
+      <p>
+        De <strong>Pong</strong> à <strong>Tetris</strong>, de <strong>Super Mario</strong> à <strong>Final Fantasy</strong>,
+        chaque décennie a vu naître des jeux emblématiques, des innovations techniques majeures et des évolutions culturelles profondes.
+      </p>
+    </div>
+    <p>
+      <strong>L’histoire du jeu vidéo</strong> est faite de rivalités entre constructeurs, de sauts technologiques,
+      mais aussi de souvenirs personnels. Voyons ensemble quelques grandes dates.
+    </p>
+  </section>
+<hr/>
+  <section class="section">
+    <h2>Jeux les plus vendus par décennie</h2>
+    <div id="sales" class="grid"></div>
+  </section>
+<hr/>
+<section class="section">
+  <h2>Carte Editeur / Developpeur</h2>
+</section>
+<section id="carteSection" style="width: 100%; height: 600px;" class="section">
+  <div id="map" style="width: 100%; height: 100%;"></div>
+  <aside id="details" style="position: absolute; top: 10px; right: 10px; 
+                            background: #1e1e1e; padding: 10px; 
+                            max-width: 300px; overflow-y: auto; max-height: 580px; box-shadow: 0 0 10px #00000033;">
+    <!-- Détails s’afficheront ici -->
+  </aside>
+  <input type="search" id="search" placeholder="Rechercher un éditeur, jeu, console" style="position:absolute; top:10px; left:10px; width:250px; z-index:1000;">
+</section>
+<hr/>
+  <section class="section">
+    <h2>Dates Marquantes</h2>
+    <div id="timeline-event" class="grid"></div>
+  </section>
+
+<div id="footer"></div>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const aboutGrid = document.getElementById('sales');
+      const aboutTimeline = document.getElementById('timeline-event')
+    
+
+      function loadSales() {
+        db.collection('sales').orderBy('ordre').onSnapshot(snapshot => {
+          aboutGrid.innerHTML = '';
+          snapshot.forEach(doc => {
+            const sale = doc.data();
+            const item = document.createElement('div');
+            item.className = 'card sales-event';
+            item.innerHTML = `
+              <h2 class="sales-date">${sale.annee}</h2>
+              <div class="sales-content">${sale.name}</div>
+            `;
+            aboutGrid.appendChild(item);
+          });
+          animateOnView();
+        });
+      }
+
+       function loadTime() {
+        db.collection('timeline_events').orderBy('ordre').onSnapshot(snapshot => {
+          aboutTimeline.innerHTML = '';
+          snapshot.forEach(doc => {
+            const timeline = doc.data();
+            const items = document.createElement('div');
+            items.className = 'card time-event';
+            items.style = 'justify-content: start;'
+            items.innerHTML = `
+            <div>
+              <h2 class="time-date">${timeline.annee}</h2>
+            </div>
+            <div>
+              <h4 class="time-content">${timeline.evenement}</h4>
+               <p class="time-content">${timeline.description}</p>
+            </div>
+            `;
+            aboutTimeline.appendChild(items);
+          });
+          animateOnView();
+        });
+      }
+
+      function animateOnView() {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.event, .timeline-event').forEach(el => observer.observe(el));
+      }
+
+      function centerCenteredEvent() {
+        const centered = timeline.querySelector('.centered');
+        if (!centered) return;
+
+        const timelineRect = timeline.getBoundingClientRect();
+        const centeredRect = centered.getBoundingClientRect();
+        const offset = (centeredRect.left + centeredRect.width / 2) - (timelineRect.left + timelineRect.width / 2);
+        timeline.scrollLeft += offset;
+      }
+function highlightCenteredEvent() {
+        const events = document.querySelectorAll('.event');
+        const timelineRect = timeline.getBoundingClientRect();
+        const centerX = timelineRect.left + timelineRect.width / 2;
+
+        let closestEl = null;
+        let closestDist = Infinity;
+
+        events.forEach(event => {
+          const rect = event.getBoundingClientRect();
+          const eventCenter = rect.left + rect.width / 2;
+          const distance = Math.abs(centerX - eventCenter);
+
+          if (distance < closestDist) {
+            closestDist = distance;
+            closestEl = event;
+          }
+        });
+
+        events.forEach(event => {
+          event.classList.remove('centered');
+        });
+
+        if (closestEl) {
+          closestEl.classList.add('centered');
+        }
+      }
+      function centerEventAt(index) {
+        const events = [...timeline.querySelectorAll('.event')];
+        if (index < 0 || index >= events.length) return;
+
+        events.forEach(el => el.classList.remove('centered'));
+        const el = events[index];
+        el.classList.add('centered');
+
+        const timelineRect = timeline.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const offset = (elRect.left + elRect.width / 2) - (timelineRect.left + timelineRect.width / 2);
+        timeline.scrollLeft += offset;
+      }
+function scrollToYear(id) {
+  const timeline = document.querySelector('.timeline-container');
+  const card = document.getElementById(id);
+  if (!card || !timeline) return;
+
+  const timelineRect = timeline.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const offset = (cardRect.left + cardRect.width / 2) - (timelineRect.left + timelineRect.width / 2);
+  timeline.scrollLeft += offset;
+
+  document.querySelectorAll('.event').forEach(e => e.classList.remove('centered'));
+  card.classList.add('centered');
+}
+
+      let currentIndex = 0;
+
+
+      loadSales();
+      loadTime();
+      
+    });
+
+ //=================
+ //=================
+ //======MAP========
+ 
+//======MAP========
+const map = L.map('map').setView([48.8566, 2.3522], 5);
+
+// Fond sombre
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; CartoDB',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+let allMarkers = [];
+let allEditors = [];
+
+// Icône orange personnalisée
+const orangeIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+function updateSidebar(editeur) {
+  document.getElementById('details').innerHTML = `
+    <img src="${editeur.image}" style="width:100%;margin:1rem 0;"></img>
+    <h3>${editeur.nom}</h3>
+    <p><strong>Types :</strong> ${editeur.type}</p>
+    <p><strong>Adresse :</strong> ${editeur.adresse}</p>
+    <p><strong>Chiffre d'affaires :</strong> ${editeur.ca}</p>
+    <p><strong>Consoles :</strong> ${editeur.consoles.join(', ')}</p>
+    <p><strong>Jeux notables :</strong> ${editeur.jeux.join(', ')}</p>
+  `;
+}
+
+fetch('json/editeurs.json')
+  .then(res => res.json())
+  .then(data => {
+    allEditors = data;
+    displayMarkers(data);
+  });
+
+function displayMarkers(editors) {
+  allMarkers.forEach(marker => map.removeLayer(marker));
+  allMarkers = [];
+
+  editors.forEach(editeur => {
+    const marker = L.marker([editeur.lat, editeur.lng], { icon: orangeIcon }).addTo(map);
+    marker.on('click', () => {
+      updateSidebar(editeur);
+      map.setView([editeur.lat, editeur.lng], 8);
+    });
+    allMarkers.push(marker);
+  });
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  const keyword = e.target.value.toLowerCase();
+  const filtered = allEditors.filter(editeur =>
+    editeur.nom.toLowerCase().includes(keyword) ||
+    editeur.jeux.some(jeu => jeu.toLowerCase().includes(keyword)) ||
+    editeur.consoles.some(console => console.toLowerCase().includes(keyword))
+  );
+  displayMarkers(filtered);
+
+  if (filtered.length === 1) {
+    updateSidebar(filtered[0]);
+    map.setView([filtered[0].lat, filtered[0].lng], 8);
+  }
+});
+
+
+  </script>
+  
+</body>
+</html>

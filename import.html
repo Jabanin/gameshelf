@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Importer un JSON dans Firebase</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 🔧 Remplace ici par tes infos Firebase :
+    const firebaseConfig = {
+  apiKey: "AIzaSyD1jpwKHdwD_lKp-i1b_PmsKwcXJK9Nw9g",
+  authDomain: "gameshelf-4e8f5.firebaseapp.com",
+  projectId: "gameshelf-4e8f5",
+  storageBucket: "gameshelf-4e8f5.firebasestorage.app",
+  messagingSenderId: "567826044551",
+  appId: "1:567826044551:web:1f06af0cd95cd572fb0a22",
+  measurementId: "G-DMKXREHX43"
+};
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🔁 Fonction pour importer les données JSON dans Firestore
+    async function importerJSON(data, collectionName) {
+      const ref = collection(db, collectionName);
+      for (const item of data) {
+        await addDoc(ref, item);
+      }
+      alert(`Importation dans "${collectionName}" terminée !`);
+    }
+
+    // 📂 Gestion du fichier sélectionné
+    window.handleFileUpload = async function () {
+      const input = document.getElementById("jsonFile");
+      const collectionName = document.getElementById("collectionName").value.trim();
+
+      if (!input.files.length || !collectionName) {
+        alert("Sélectionne un fichier et un nom de collection.");
+        return;
+      }
+
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function (e) {
+        try {
+          const json = JSON.parse(e.target.result);
+          if (!Array.isArray(json)) throw new Error("Le JSON doit être un tableau.");
+          await importerJSON(json, collectionName);
+        } catch (err) {
+          alert("Erreur : " + err.message);
+        }
+      };
+
+      reader.readAsText(file);
+    };
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    input, button, select {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>📥 Importer un fichier JSON dans Firebase</h1>
+  <input type="file" id="jsonFile" accept=".json"><br>
+  <input type="text" id="collectionName" placeholder="Nom de la collection (ex: jeux)"><br>
+  <button onclick="handleFileUpload()">Importer</button>
+</body>
+</html>

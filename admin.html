@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script> 
+
+
+</head>
+<body>
+<div id="header"></div>
+
+<main class="section" id="adminContent" style="display: none;">
+  
+    <h2>Ajouter ou modifier un jeu</h2>
+    <form id="gameForm">
+      <input type="hidden" id="gameId" />
+      <input type="text" id="name" placeholder="Nom du jeu" required />
+      <input type="text" id="console" placeholder="Console" required />
+      <input type="text" id="genre" placeholder="Genre" />
+      <input type="text" id="developpeur" placeholder="Developpeur" />
+      <input type="text" id="editeur" placeholder="Editeur" />
+      <input type="number" id="year" placeholder="Année de sortie" min="1970" />
+<input type="number" id="rating" placeholder="Note" min="0" max="10" />
+      <input type="url" id="image" placeholder="Image URL" />
+	<input type="number" id="obtenue" placeholder="Année d'obtention" />
+      <input type="text" id="statut" placeholder="Disponible ou Prêté" />
+      <input type="text" id="borrower" placeholder="Emprunté par..." />
+      <input type="text" id="materiel" placeholder="Boîte,Loose,Démateriel"/>
+<textarea id="resume" placeholder="Synopsis" rows="4"></textarea>
+<textarea id="avis" placeholder="Mon avis" rows="4"></textarea>
+<label><input type="checkbox" id="favorite" style="width: auto;"> ⭐ Favori</label>
+<div class="button-admin">
+    <button type="submit">Enregistrer le jeu</button>
+  <button type="button" id="resetGame">Réinitialiser</button></div>
+    </form>
+    
+    <input type="text" id="searchGames" placeholder="Rechercher un jeu..." />
+    <div id="gameList" class="grid-admin"></div>
+<button id="toggleGames" onclick="toggleShowMore('games')">Afficher plus</button>
+
+    <hr/>
+
+    <h2>Ajouter ou modifier une console</h2>
+    <form id="consoleForm">
+      <input type="hidden" id="consoleId" />
+      <input type="text" id="consoleName" placeholder="Nom de la console" required />
+      <input type="text" id="consoleFabricant" placeholder="Fabricant" required />
+      <input type="text" id="consoleType" placeholder="Type (Salon / Portable)" required />
+      <input type="number" id="consoleYear" placeholder="Année de sortie" />
+       <input type="number" id="consoleObtenue" placeholder="Année de obtenue" />
+      <input type="text" id="consoleGeneration" placeholder="Génération" />
+      <input type="url" id="consoleImage" placeholder="Image URL" />
+       <div class="button-admin">
+      <button type="submit">Enregistrer Console</button>
+      <button type="button" id="resetConsole">Réinitialiser</button>
+      </div>
+      
+    </form>
+   <input  type="text" id="searchConsoles" placeholder="Rechercher une console..." />
+    <div id="consoleList" class="grid-admin"></div>
+    <button id="toggleConsoles" onclick="toggleShowMore('consoles')">Afficher plus</button>
+    <hr />
+
+<h2>Ajouter ou modifier un souhait</h2>
+    <form id="wishForm">
+      <input type="hidden" id="wishId" />
+      <input type="text" id="wishName" placeholder="Nom du souhait" required />
+      <input type="text" id="wishConsole" placeholder="Console" required />
+      <input type="text" id="wishType" placeholder="Type (Jeu / Console)" required />
+      <input type="number" id="wishYear" placeholder="Année de sortie" />
+      <input type="url" id="wishImage" placeholder="Image URL" />
+      <div class="button-admin">
+      <button type="submit">Enregistrer Souhait</button>
+      <button type="button" id="resetWish">Réinitialiser</button>
+      </div>
+    </form>
+      
+      <input type="text" id="searchWishlist" placeholder="Rechercher un souhait">
+    <div id="wishList" class="grid-admin"></div>
+<button id="toggleWishlist" onclick="toggleShowMore('wishlist')">Afficher plus</button>
+
+    <hr />
+
+  <h2>Importer vers Firebase</h2>
+<input type="file" id="importBtn" accept=".json" />
+<div style="margin-top: 0.5rem;">
+<button id="importGames">Importer des jeux</button>
+<button id="importConsoles">Importer des consoles</button>
+<button id="importSales">Importer des ventes</button>
+<button id="importEvents">Importer des Evenements</button>
+<button id="importWishlist">Importer les Wishlist</button>
+<button id="importEditeur">Importer les Editeurs</button>
+</div>
+
+<hr />
+
+<h2>Exporter les données Firebase</h2>
+<select id="exportCollection">
+  <option value="games">Jeux</option>
+  <option value="consoles">Consoles</option>
+  <option value="wishlist">Wishlist</option>
+  <option value="sales">Ventes</option>
+  <option value="timeline_events">Timeline</option>
+</select>
+<button id="exportBtn">Exporter</button>
+ <hr />
+ 
+  </main>
+<div id="authError" style="text-align: center; padding: 2rem; display:none;">
+  <p>Accès restreint. Vous devez être connecté en tant qu'administrateur pour voir cette page.</p>
+</div>
+<div id="footer"></div>
+
+<script>
+
+  // --- AUTHENTIFICATION ADMIN ---
+const adminUIDs = [
+  "yzAfKSOC92XfIOJDoz9Zgw21vQH3" // Remplace par tes UID admin
+];
+
+let adminInitialized = false;
+
+auth.onAuthStateChanged(user => {
+  if (user && adminUIDs.includes(user.uid)) {
+    document.getElementById('adminContent').style.display = 'block';
+    document.getElementById('authError').style.display = 'none';
+    if (!adminInitialized) {
+      initAdminPage();
+      adminInitialized = true;
+    }
+  } else {
+    document.getElementById('adminContent').style.display = 'none';
+    document.getElementById('authError').style.display = 'block';
+    adminInitialized = false;
+  }
+});
+
+function initAdminPage() {
+  gestionJeux();
+  gestionConsoles();
+  gestionSouhaits();
+  gestionImportExport();
+}
+
+// ==================
+// --- GESTION JEUX ---
+// ==================
+function gestionJeux() {
+  const gameForm = document.getElementById('gameForm');
+  const gameList = document.getElementById('gameList');
+  const borrowerInput = document.getElementById('borrower');
+
+  gameForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('gameId').value;
+    const game = {
+      name: document.getElementById('name').value.trim(),
+      console: document.getElementById('console').value.trim(),
+      genre: document.getElementById('genre').value.trim(),
+      year: parseInt(document.getElementById('year').value) || null,
+      rating: parseFloat(document.getElementById('rating').value) || null,
+      image: document.getElementById('image').value.trim(),
+      status: document.getElementById('statut').value.trim(),
+      borrower: document.getElementById('borrower').value.trim(),
+      obtenue: document.getElementById('obtenue').value.trim(),
+      resume: document.getElementById('resume').value.trim(),
+      avis: document.getElementById('avis').value.trim(),
+      favorite: document.getElementById('favorite').checked,
+      materiel: document.getElementById('materiel').value.trim(),
+      editeur: document.getElementById('editeur').value.trim(),
+      developpeur: document.getElementById('developpeur').value.trim()
+    };
+    try {
+      if (id) {
+        await db.collection('games').doc(id).set(game);
+      } else {
+        await db.collection('games').add(game);
+      }
+      gameForm.reset();
+      borrowerInput.style.display = 'none';
+      renderGames(document.getElementById('searchGames').value);
+    } catch (error) {
+      alert("Erreur lors de l'enregistrement : " + error.message);
+    }
+  });
+
+  function createGameCard(game) {
+    const div = document.createElement('div');
+    const g = game.data;
+    div.className = 'card card-admin';
+    div.innerHTML = `
+      <p><strong>${g.name}</strong></p>
+      <button class="edit-game"
+        data-id="${game.id}"
+        data-name="${g.name}"
+        data-console="${g.console}"
+        data-genre="${g.genre}"
+        data-year="${g.year || ''}"
+        data-rating="${g.rating || ''}"
+        data-image="${g.image}"
+        data-statut="${g.status}"
+        data-borrower="${g.borrower}"
+        data-obtenue="${g.obtenue || ''}"
+        data-editeur="${g.editeur}"
+        data-developpeur="${g.developpeur}"
+        data-favorite="${g.favorite ? 'true' : 'false'}"
+        data-resume="${(g.resume || '').replace(/"/g, '&quot;')}"
+        data-avis="${(g.avis || '').replace(/"/g, '&quot;')}"
+        data-materiel="${g.materiel || ''}"
+      >Modifier</button>
+      <button onclick="deleteGame('${game.id}')">Supprimer</button>
+    `;
+    return div;
+  }
+
+  window.renderGames = async function(filter = '') {
+    try {
+      const snapshot = await db.collection('games').orderBy('name').get();
+      const docs = [];
+      snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+      const filtered = docs.filter(doc => 
+        doc.data.name.toLowerCase().includes(filter.toLowerCase()) ||
+        doc.data.console.toLowerCase().includes(filter.toLowerCase())
+      );
+      const itemsToShow = showMore.games === Infinity ? filtered : filtered.slice(0, showMore.games);
+      gameList.innerHTML = '';
+      itemsToShow.forEach(game => gameList.appendChild(createGameCard(game)));
+      toggleButtonsVisibility('games', filtered.length);
+    } catch (e) {
+      alert("Erreur chargement jeux : " + e.message);
+    }
+  }
+
+  document.getElementById('searchGames').addEventListener('input', e => {
+    renderGames(e.target.value);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('edit-game')) {
+      const btn = e.target;
+      document.getElementById('gameId').value = btn.dataset.id;
+      document.getElementById('name').value = btn.dataset.name;
+      document.getElementById('console').value = btn.dataset.console;
+      document.getElementById('genre').value = btn.dataset.genre;
+      document.getElementById('year').value = btn.dataset.year;
+      document.getElementById('rating').value = btn.dataset.rating;
+      document.getElementById('image').value = btn.dataset.image;
+      document.getElementById('statut').value = btn.dataset.statut;
+      document.getElementById('borrower').value = btn.dataset.borrower;
+      document.getElementById('obtenue').value = btn.dataset.obtenue;
+      document.getElementById('favorite').checked = btn.dataset.favorite === 'true';
+      document.getElementById('resume').value = btn.dataset.resume;
+      document.getElementById('avis').value = btn.dataset.avis;
+      document.getElementById('materiel').value = btn.dataset.materiel;
+      document.getElementById('editeur').value = btn.dataset.editeur;
+      document.getElementById('developpeur').value = btn.dataset.developpeur;
+      borrowerInput.style.display = btn.dataset.statut.toLowerCase() === 'prêté' ? 'inline-block' : 'none';
+    }
+  });
+
+  window.deleteGame = async function(id) {
+    if (confirm("Supprimer ce jeu ?")) {
+      try {
+        await db.collection('games').doc(id).delete();
+        renderGames(document.getElementById('searchGames').value);
+      } catch (e) {
+        alert("Erreur suppression : " + e.message);
+      }
+    }
+  };
+
+  document.getElementById('resetGame').addEventListener('click', () => {
+    gameForm.reset();
+    document.getElementById('gameId').value = '';
+    borrowerInput.style.display = 'none';
+  });
+
+  renderGames();
+}
+// ======================
+// --- GESTION CONSOLES ---
+// ======================
+function gestionConsoles() {
+  const consoleForm = document.getElementById('consoleForm');
+  const consoleList = document.getElementById('consoleList');
+
+  consoleForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('consoleId').value;
+    const c = {
+      name: document.getElementById('consoleName').value.trim(),
+      fabricant: document.getElementById('consoleFabricant').value.trim(),
+      year: parseInt(document.getElementById('consoleYear').value) || null,
+      obtenue: parseInt(document.getElementById('consoleObtenue').value) || null,
+      type: document.getElementById('consoleType').value.trim(),
+      image: document.getElementById('consoleImage').value.trim(),
+      generation: document.getElementById('consoleGeneration').value.trim()
+    };
+    try {
+      if (id) {
+        await db.collection('consoles').doc(id).set(c);
+      } else {
+        await db.collection('consoles').add(c);
+      }
+      consoleForm.reset();
+      renderConsoles(document.getElementById('searchConsoles').value);
+    } catch (e) {
+      alert("Erreur sauvegarde console : " + e.message);
+    }
+  });
+
+  function createConsoleCard(c) {
+    const div = document.createElement('div');
+    const data = c.data;
+    div.className = 'card card-admin';
+    div.innerHTML = `
+      <p><strong>${data.name}</strong></p>
+      <button class="edit-console"
+        data-id="${c.id}"
+        data-name="${data.name}"
+        data-fabricant="${data.fabricant}"
+        data-year="${data.year || ''}"
+        data-obtenue="${data.obtenue || ''}"
+        data-type="${data.type}"
+        data-image="${data.image}"
+        data-generation="${data.generation}"
+      >Modifier</button>
+      <button onclick="deleteConsole('${c.id}')">Supprimer</button>
+    `;
+    return div;
+  }
+
+  window.renderConsoles = async function(filter = '') {
+    try {
+      const snapshot = await db.collection('consoles').orderBy('name').get();
+      const docs = [];
+      snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+      const filtered = docs.filter(doc =>
+        doc.data.name.toLowerCase().includes(filter.toLowerCase()) ||
+        doc.data.brand.toLowerCase().includes(filter.toLowerCase())
+      );
+      const itemsToShow = showMore.consoles === Infinity ? filtered : filtered.slice(0, showMore.consoles);
+      consoleList.innerHTML = '';
+      itemsToShow.forEach(c => consoleList.appendChild(createConsoleCard(c)));
+      toggleButtonsVisibility('consoles', filtered.length);
+    } catch (e) {
+      alert("Erreur chargement consoles : " + e.message);
+    }
+  }
+
+  document.getElementById('searchConsoles').addEventListener('input', e => {
+    renderConsoles(e.target.value);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('edit-console')) {
+      const btn = e.target;
+      document.getElementById('consoleId').value = btn.dataset.id;
+      document.getElementById('consoleName').value = btn.dataset.name;
+      document.getElementById('consoleFabricant').value = btn.dataset.fabricant;
+      document.getElementById('consoleYear').value = btn.dataset.year;
+      document.getElementById('consoleObtenue').value = btn.dataset.year
+      document.getElementById('consoleType').value = btn.dataset.type;
+      document.getElementById('consoleImage').value = btn.dataset.image;
+      document.getElementById('consoleGeneration').value = btn.dataset.generation;
+    }
+  });
+
+  window.deleteConsole = async function(id) {
+    if (confirm("Supprimer cette console ?")) {
+      try {
+        await db.collection('consoles').doc(id).delete();
+        renderConsoles(document.getElementById('searchConsoles').value);
+      } catch (e) {
+        alert("Erreur suppression : " + e.message);
+      }
+    }
+  }
+
+  document.getElementById('resetConsole').addEventListener('click', () => {
+    consoleForm.reset();
+    document.getElementById('consoleId').value = '';
+  });
+
+  renderConsoles();
+}
+// =======================
+// --- GESTION SOUHAITS ---
+// =======================
+function gestionSouhaits() {
+  const wishForm = document.getElementById('wishForm');
+  const wishList = document.getElementById('wishList');
+
+  wishForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('wishId').value;
+    const w = {
+      name: document.getElementById('wishName').value.trim(),
+      console: document.getElementById('wishConsole').value.trim(),
+      year: parseInt(document.getElementById('wishYear').value) || null,
+      image: document.getElementById('wishImage').value.trim(),
+      type: document.getElementById('wishType').value.trim()
+    };
+    try {
+      if (id) {
+        await db.collection('wishlist').doc(id).set(w);
+      } else {
+        await db.collection('wishlist').add(w);
+      }
+      wishForm.reset();
+      renderWishlist(document.getElementById('searchWishlist').value);
+    } catch (e) {
+      alert("Erreur sauvegarde souhait : " + e.message);
+    }
+  });
+
+  function createWishCard(w) {
+    const div = document.createElement('div');
+    const data = w.data;
+    div.className = 'card card-admin';
+    div.innerHTML = `
+      <p><strong>${data.name}</strong></p>
+      <button class="edit-wish"
+        data-id="${w.id}"
+        data-name="${data.name}"
+        data-type="${data.type}"
+        data-console="${data.console}"
+        data-year="${data.year || ''}"
+        data-image="${data.image}"
+      >Modifier</button>
+      <button onclick="deleteWish('${w.id}')">Supprimer</button>
+    `;
+    return div;
+  }
+
+  window.renderWishlist = async function(filter = '') {
+    try {
+      const snapshot = await db.collection('wishlist').orderBy('name').get();
+      const docs = [];
+      snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+      const filtered = docs.filter(doc =>
+        doc.data.name.toLowerCase().includes(filter.toLowerCase()) ||
+        doc.data.console.toLowerCase().includes(filter.toLowerCase())
+      );
+      const itemsToShow = showMore.wishlist === Infinity ? filtered : filtered.slice(0, showMore.wishlist);
+      wishList.innerHTML = '';
+      itemsToShow.forEach(w => wishList.appendChild(createWishCard(w)));
+      toggleButtonsVisibility('wishlist', filtered.length);
+    } catch (e) {
+      alert("Erreur chargement souhaits : " + e.message);
+    }
+  }
+
+  document.getElementById('searchWishlist').addEventListener('input', e => {
+    renderWishlist(e.target.value);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('edit-wish')) {
+      const btn = e.target;
+      document.getElementById('wishId').value = btn.dataset.id;
+      document.getElementById('wishName').value = btn.dataset.name;
+      document.getElementById('wishConsole').value = btn.dataset.console;
+      document.getElementById('wishYear').value = btn.dataset.year;
+      document.getElementById('wishImage').value = btn.dataset.image;
+      document.getElementById('wishType').value = btn.dataset.type;
+    }
+  });
+
+  window.deleteWish = async function(id) {
+    if (confirm("Supprimer ce souhait ?")) {
+      try {
+        await db.collection('wishlist').doc(id).delete();
+        renderWishlist(document.getElementById('searchWishlist').value);
+      } catch (e) {
+        alert("Erreur suppression : " + e.message);
+      }
+    }
+  }
+
+  document.getElementById('resetWish').addEventListener('click', () => {
+    wishForm.reset();
+    document.getElementById('wishId').value = '';
+  });
+
+  renderWishlist();
+}
+// ============================
+// --- IMPORT / EXPORT JSON ---
+// ============================
+function gestionImportExport() {
+  const importBtn = document.getElementById('importBtn');
+  const importGamesBtn = document.getElementById('importGames');
+  const importConsolesBtn = document.getElementById('importConsoles');
+  const importSalesBtn = document.getElementById('importSales');
+  const importEventsBtn = document.getElementById('importEvents');
+  const importWishlistBtn = document.getElementById('importWishlist');
+  const importEditeurBtn = document.getElementById('importEditeur');
+
+  const exportCollectionSelect = document.getElementById('exportCollection');
+  const exportBtn = document.getElementById('exportBtn');
+
+  let importedData = null;
+
+  // Quand on sélectionne un fichier, on le charge en mémoire
+  importBtn.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        importedData = JSON.parse(evt.target.result);
+        alert('Fichier JSON chargé avec succès. Choisissez une collection pour importer.');
+      } catch (err) {
+        alert('Erreur lors du parsing JSON : ' + err.message);
+        importedData = null;
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  // Fonction générique pour importer un tableau d'objets dans une collection Firestore
+  async function importCollection(collectionName) {
+    if (!importedData || !Array.isArray(importedData)) {
+      alert("Aucune donnée JSON chargée ou format incorrect (doit être un tableau).");
+      return;
+    }
+    try {
+      const batch = db.batch();
+      importedData.forEach(item => {
+        const docId = item.id;  // on récupère l'id pour nommer le doc
+        const data = {...item}; // copie de l'objet
+        delete data.id;         // on supprime le champ id des données
+
+        // Conversion lat/lng en Number uniquement pour la collection "editeurs"
+        if (collectionName === "editeurs") {
+          if (data.lat !== undefined) data.lat = Number(data.lat);
+          if (data.lng !== undefined) data.lng = Number(data.lng);
+        }
+
+        const docRef = docId ? db.collection(collectionName).doc(docId) : db.collection(collectionName).doc();
+        batch.set(docRef, data);
+      });
+      await batch.commit();
+      alert(`Import dans "${collectionName}" réussi !`);
+      importedData = null;
+      importBtn.value = ''; // reset input file
+    } catch (e) {
+      alert("Erreur lors de l'import : " + e.message);
+    }
+  }
+
+  // Assignation des boutons d'import
+  if (importGamesBtn) importGamesBtn.addEventListener('click', () => importCollection('games'));
+  if (importConsolesBtn) importConsolesBtn.addEventListener('click', () => importCollection('consoles'));
+  if (importSalesBtn) importSalesBtn.addEventListener('click', () => importCollection('sales'));
+  if (importEventsBtn) importEventsBtn.addEventListener('click', () => importCollection('timeline_events'));
+  if (importWishlistBtn) importWishlistBtn.addEventListener('click', () => importCollection('wishlist'));
+  if (importEditeurBtn) importEditeurBtn.addEventListener('click', () => importCollection('editeurs'));
+
+
+  // Exporter la collection sélectionnée vers un fichier JSON téléchargeable
+  exportBtn.addEventListener('click', async () => {
+    const collectionName = exportCollectionSelect.value;
+    try {
+      const snapshot = await db.collection(collectionName).get();
+      const docs = [];
+      snapshot.forEach(doc => {
+        docs.push({ id: doc.id, ...doc.data() });
+      });
+      const jsonStr = JSON.stringify(docs, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      // Création d'un lien temporaire pour déclencher le téléchargement
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${collectionName}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert("Erreur lors de l'export : " + e.message);
+    }
+  });
+}
+
+
+const showMore = {
+  games: 4,
+  consoles: 4,
+  wishlist: 4
+};
+
+function toggleShowMore(type) {
+  showMore[type] = showMore[type] === Infinity ? 4 : Infinity;
+  const button = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  button.textContent = showMore[type] === Infinity ? 'Réduire' : 'Afficher plus';
+  if (type === 'games') renderGames(document.getElementById('searchGames').value);
+  if (type === 'consoles') renderConsoles(document.getElementById('searchConsoles').value);
+  if (type === 'wishlist') renderWishlist(document.getElementById('searchWishlist').value);
+}
+
+function toggleButtonsVisibility(type, totalCount) {
+  const button = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  button.style.display = totalCount > 4 ? 'block' : 'none';
+}
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Inscription</title>
+<script type="module">
+  import { firebaseConfig } from './firebase-config.js';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('signup-form');
+    const messageEl = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const pseudo = document.getElementById('pseudo').value.trim();
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await updateProfile(user, { displayName: pseudo });
+        await setDoc(doc(db, 'users', user.uid), {
+          pseudo: pseudo,
+          email: email,
+          psn: '',
+          steam: '',
+          nintendo: '',
+          photoURL: ''
+        });
+        messageEl.style.color = 'green';
+        messageEl.textContent = "Compte créé avec succès ! Tu peux maintenant te connecter.";
+        form.reset();
+      } catch (error) {
+        messageEl.style.color = 'red';
+        messageEl.textContent = "Erreur : " + error.message;
+      }
+    });
+  });
+</script>
+</head>
+<body>
+<h1>Créer un compte</h1>
+<form id="signup-form">
+  <label>Email : <input type="email" id="email" required></label><br>
+  <label>Mot de passe : <input type="password" id="password" required></label><br>
+  <label>Pseudo : <input type="text" id="pseudo" required></label><br>
+  <button type="submit">S'inscrire</button>
+</form>
+<p id="message"></p>
+<p>Tu as déjà un compte ? <a href="login.html">Connecte-toi ici</a></p>
+</body>
+</html>

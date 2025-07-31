@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
+  <script src="js/breadcrumbs-console.js"></script>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ol>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="consoles.html">Consoles</a></li>
+    </ol>
+  </nav>
+
+  <main class="section">
+    <div id="Titre"></div>
+
+    <div class="details">
+      <div id="consoleImage"></div>
+      <div id="consoleDetails"></div>
+    </div>
+
+    <div class="resume"></div>
+
+<!-- Consoles de la même génération -->
+<section id="similarConsolesSection" style="margin-top:3rem;">
+  <h2>Consoles de la même génération</h2>
+  <div id="similarConsolesGrid" class="grid"></div>
+  <div id="noneConsoles"></div>
+</section>
+
+<!-- Jeux sur cette console -->
+<section id="gamesOnConsoleSection" style="margin-top:3rem;">
+  <h2>Jeux que tu possèdes sur cette console</h2>
+  <div id="gamesOnConsoleGrid" class="grid"></div>
+  <div id="noneGames"></div>
+</section>
+  </main>
+
+<div id="footer"></div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const name = params.get("name");
+
+  if (name) {
+    db.collection("consoles")
+      .where("name", "==", name)
+      .get()
+      .then(snapshot => {
+        if (!snapshot.empty) {
+          const doc = snapshot.docs[0];
+          const console = doc.data();
+          const id = doc.id;
+
+          // Titre
+          document.getElementById("Titre").innerHTML = `<h2>${console.name}</h2>`;
+
+        // Image classique sans suppression du fond
+document.getElementById("consoleImage").innerHTML = `
+  <img src="${console.image}" alt="${console.name}" onerror="this.src='default-image.png';" />
+`;
+
+
+          // Détails
+          document.getElementById("consoleDetails").innerHTML = `
+            <p><strong>Fabricant :</strong> ${console.fabricant}</p>
+            <p><strong>Type :</strong> ${console.type}</p>
+            <p><strong>Année de sortie :</strong> ${console.year}</p>
+            <p><strong>${console.generation} génération</strong></p>
+            <p><strong>Année obtenue :</strong> ${console.obtenue || '—'}</p>
+          `;
+
+          // Consoles similaires
+          if (console.generation) {
+            afficherConsoleSimilaires(id, console.generation.toLowerCase());
+          }
+          // Jeux sur cette console
+          if (console.name) {
+            afficherJeuxSurConsole(console.name);
+          }
+
+        } else {
+          document.getElementById("Titre").textContent = "Console introuvable.";
+        }
+      });
+  } else {
+    document.getElementById("Titre").textContent = "Aucune console spécifiée.";
+  }
+
+  function afficherConsoleSimilaires(currentId, generation) {
+    db.collection('consoles').get().then(snapshot => {
+      const similarConsoles = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (doc.id !== currentId && data.generation?.toLowerCase() === generation) {
+          similarConsoles.push({ ...data, id: doc.id });
+        }
+      });
+
+      const grid = document.getElementById('similarConsolesGrid');
+      const noneGenre = document.getElementById('noneConsoles');
+      grid.innerHTML = '';
+      noneGenre.innerHTML = '';
+
+      if (similarConsoles.length === 0) {
+        noneGenre.innerHTML = '<p style="text-align:center;color:#888;">Aucune autre console de cette génération.</p>';
+        return;
+      }
+
+      similarConsoles.forEach(consoles => {
+        const div = document.createElement('div');
+        div.className = 'card card-jeu';
+        div.innerHTML = `
+          <img src="${consoles.image}" alt="${consoles.name}" onerror="this.src='default-image.png';" />
+          <h3>${consoles.name}</h3>
+          <p>${consoles.generation} génération</p>
+          <a class="button button-card" href="console.html?name=${encodeURIComponent(consoles.name)}">+</a>
+        `;
+        grid.appendChild(div);
+      });
+    });
+  }
+
+  function afficherJeuxSurConsole(consoleName) {
+    db.collection('games').get().then(snapshot => {
+      const jeux = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.console === consoleName) {
+          jeux.push({ ...data, id: doc.id });
+        }
+      });
+
+      const grid = document.getElementById('gamesOnConsoleGrid');
+      const noneGames = document.getElementById('noneGames');
+      grid.innerHTML = '';
+      noneGames.innerHTML = '';
+
+      if (jeux.length === 0) {
+        noneGames.innerHTML = '<p style="text-align:center;color:#888;">Aucun jeu trouvé pour cette console.</p>';
+        return;
+      }
+
+      jeux.forEach(game => {
+        const div = document.createElement('div');
+        div.className = 'card card-jeu';
+        div.innerHTML = `
+          <img src="${game.image}" alt="${game.name}" onerror="this.src='default-image.png';" />
+          <h3>${game.name}</h3>
+          <p>${game.genre}</p>
+          <a class="button button-card" href="jeu.html?id=${game.id}">+</a>
+        `;
+        grid.appendChild(div);
+      });
+    });
+  }
+</script>
+
+</body>
+
+</html>

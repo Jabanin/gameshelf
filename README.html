@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
+</head>
+<body>
+<header id="mainHeader">
+  <div class="header-inner">
+    <img src="img/logo.png" alt="GameShelf" class="logo" id="logo">
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="about.html">A propos</a>
+      <a href="jeux.html">Jeux</a>
+      <a href="consoles.html">Consoles</a>
+      <a href="histoire.html">Histoire</a>
+      <div id="authLink"></div>
+    </nav>
+  </div>
+
+</header>
+
+<main class="section" id="adminContent" style="display: none;">
+    <h2>Ajouter ou modifier un jeu</h2>
+    <form id="gameForm">
+      <input type="hidden" id="gameId" />
+      <input type="text" id="name" placeholder="Nom du jeu" required />
+      <input type="text" id="console" placeholder="Console" required />
+	<input type="text" id="materiel" placeholder="Boîte,Loose,Démateriel"/>
+      <input type="text" id="genre" placeholder="Genre" />
+      <input type="number" id="year" placeholder="Année de sortie" min="1970" />
+<input type="number" id="rating" placeholder="Note" min="0" max="10" />
+      <input type="url" id="image" placeholder="Image URL" />
+	<input type="number" id="obtenue" placeholder="Année d'obtention" />
+	
+      <input type="text" id="statut" placeholder="Disponible ou Prêté" />
+      <input type="text" id="borrower" placeholder="Emprunté par..." />
+<textarea id="resume" placeholder="Résumé du jeu" rows="4" style="width:100%;"></textarea>
+<label><input type="checkbox" id="favorite" style="width: auto;"> ⭐ Favori</label>
+
+<div class="button-admin"><button type="submit">Enregistrer</button>
+  <button type="button" id="resetGame">Réinitialiser</button></div>
+  
+    </form>
+    <input type="text" id="searchGames" placeholder="Rechercher un jeu..." />
+    <div id="gameList" class="grid-admin"></div>
+<button id="toggleGames">Afficher plus</button>
+    <hr/>
+    <h2>Ajouter ou modifier une console</h2>
+    <form id="consoleForm">
+      <input type="hidden" id="consoleId" />
+      <input type="text" id="consoleName" placeholder="Nom de la console" required />
+      <input type="text" id="consoleType" placeholder="Type (Salon / Portable)" required />
+      <input type="number" id="consoleYear" placeholder="Année de sortie" />
+<input type="number" id="consoleObtenue" placeholder="Année de obtenue" />
+<input type="text" id="consoleGeneration" placeholder="Génération" />
+      <input type="url" id="consoleImage" placeholder="Image URL" />
+      <div class="button-admin">
+      <button type="submit">Enregistrer Console</button>
+      <button type="button" id="resetConsole">Réinitialiser</button>
+      </div>
+    </form>
+<input type="text" id="searchConsoles" placeholder="Rechercher une console..." />
+    <div id="consoleList" class="grid-admin"></div>
+<button id="toggleConsoles">Afficher plus</button>
+    <hr />
+
+  <h2>Importer vers Firebase</h2>
+<input type="file" id="jsonFile" accept=".json" />
+<div style="margin-top: 0.5rem;">
+<button id="importGames">Importer des jeux</button>
+<button id="importConsoles">Importer des consoles</button>
+<button id="importSales">Importer des ventes</button>
+<button id="importEvents">Importer des Evenements</button>
+
+</div>
+
+<hr />
+
+<h2>Exporter les données Firebase</h2>
+<select id="exportCollection">
+  <option value="games">Jeux</option>
+  <option value="consoles">Consoles</option>
+  <option value="sales">Ventes</option>
+  <option value="timeline_events">Timeline</option>
+</select>
+<button id="exportButton">Exporter</button>
+ <hr />
+ 
+  </main>
+<div id="authError" style="text-align: center; padding: 2rem; display:none;">
+  <p>Accès restreint. Vous devez être connecté en tant qu'administrateur pour voir cette page.</p>
+</div>
+  <footer>
+    GameShelf © 2025 — Suivi de collection personnel
+  </footer>
+
+
+  <script>
+  
+   const adminUIDs = [
+    "yzAfKSOC92XfIOJDoz9Zgw21vQH3"
+    // Ajoutez d'autres UID admin si nécessaire
+  ];
+   auth.onAuthStateChanged(user => {
+    if (user && adminUIDs.includes(user.uid)) {
+      document.getElementById('adminContent').style.display = 'block';
+      initAdminPage(); // Appel à la logique admin après validation
+    } else {
+      document.getElementById('authError').style.display = 'block';
+    }
+  });
+
+
+
+  function initAdminPage() {
+    // === GESTION JEUX ===
+    const gameForm = document.getElementById('gameForm');
+    const gameList = document.getElementById('gameList');
+ 
+
+  
+
+    gameForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('gameId').value;
+      const game = {
+        name: document.getElementById('name').value,
+        console: document.getElementById('console').value,
+        genre: document.getElementById('genre').value,
+        year: parseInt(document.getElementById('year').value) || null,
+        rating: parseFloat(document.getElementById('rating').value) || null,
+        image: document.getElementById('image').value,
+        status: document.getElementById('statut').value,
+        borrower: document.getElementById('borrower').value,
+	obtenue: document.getElementById('obtenue').value,
+	resume: document.getElementById('resume').value,
+	favorite: document.getElementById('favorite').checked,
+	materiel: document.getElementById('materiel').value
+      };
+      if (id) {
+        await db.collection('games').doc(id).set(game);
+      } else {
+        await db.collection('games').add(game);
+      }
+      gameForm.reset();
+      borrowerInput.style.display = 'none';
+    });
+
+   function renderGames() {
+  db.collection('games').onSnapshot(snapshot => {
+    const docs = [];
+    snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+    filterAndDisplay(docs, gameList, 'games', game => {
+      const div = document.createElement('div');
+      const g = game.data;
+      div.className = 'card card-admin';
+      div.innerHTML = `
+        <p>${g.name}</p>
+        <button 
+  class="edit-game"
+  data-id="${game.id}"
+  data-name="${g.name}"
+  data-console="${g.console}"
+  data-genre="${g.genre}"
+  data-year="${g.year || ''}"
+  data-rating="${g.rating || ''}"
+  data-image="${g.image}"
+  data-statut="${g.status}"
+  data-borrower="${g.borrower}"
+  data-obtenue="${g.obtenue || ''}"
+  data-favorite="${g.favorite ? 'true' : 'false'}"
+  data-resume="${g.resume?.replace(/"/g, '&quot;') || ''}"
+  data-materiel="${g.materiel}"
+>
+  Modifier
+</button>
+        <button onclick='deleteGame("${game.id}")'>Supprimer</button>
+      `;
+      return div;
+    });
+  });
+
+  document.getElementById('searchGames').addEventListener('input', () => renderGames());
+document.getElementById('searchConsoles').addEventListener('input', () => renderConsoles());
+
+}
+
+
+      document.addEventListener('click', e => {
+  if (e.target.classList.contains('edit-game')) {
+    const btn = e.target;
+    document.getElementById('gameId').value = btn.dataset.id;
+    document.getElementById('name').value = btn.dataset.name;
+    document.getElementById('console').value = btn.dataset.console;
+    document.getElementById('genre').value = btn.dataset.genre;
+    document.getElementById('year').value = btn.dataset.year;
+    document.getElementById('rating').value = btn.dataset.rating;
+    document.getElementById('image').value = btn.dataset.image;
+    document.getElementById('statut').value = btn.dataset.statut;
+    document.getElementById('borrower').value = btn.dataset.borrower;
+    document.getElementById('obtenue').value = btn.dataset.obtenue;
+    document.getElementById('favorite').checked = btn.dataset.favorite === 'true';
+    document.getElementById('resume').value = btn.dataset.resume;
+    document.getElementById('materiel').value = btn.dataset.materiel;
+  }
+});
+
+
+    async function deleteGame(id) {
+      await db.collection('games').doc(id).delete();
+    }
+
+    renderGames();
+
+    // === GESTION CONSOLES ===
+    const consoleForm = document.getElementById('consoleForm');
+    const consoleList = document.getElementById('consoleList');
+
+    consoleForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = document.getElementById('consoleId').value;
+      const consoleData = {
+        name: document.getElementById('consoleName').value,
+        type: document.getElementById('consoleType').value,
+        year: parseInt(document.getElementById('consoleYear').value) || null,
+        image: document.getElementById('consoleImage').value,
+	generation: document.getElementById('consoleGeneration').value,
+	obtenue: document.getElementById('consoleObtenue').value
+      };
+      if (id) {
+        await db.collection('consoles').doc(id).set(consoleData);
+      } else {
+        await db.collection('consoles').add(consoleData);
+      }
+      consoleForm.reset();
+    });
+
+    function renderConsoles() {
+    db.collection('consoles').onSnapshot(snapshot => {
+    const docs = [];
+    snapshot.forEach(doc => docs.push({ id: doc.id, data: doc.data() }));
+    filterAndDisplay(docs, consoleList, 'consoles', c => {
+      const div = document.createElement('div');
+      const consoleData = c.data;
+      div.className = 'card card-admin';
+      div.innerHTML = `
+        <p>${consoleData.name}</p>
+        <button onclick='editConsole("${c.id}", ${JSON.stringify(consoleData).replace(/"/g, '&quot;')})'>Modifier</button>
+        <button onclick='deleteConsole("${c.id}")'>Supprimer</button>
+      `;
+      return div;
+    });
+  });
+
+  document.getElementById('searchConsoles').addEventListener('input', () => renderConsoles());
+}
+
+
+    function editConsole(id, c) {
+      document.getElementById('consoleId').value = id;
+      document.getElementById('consoleName').value = c.name;
+      document.getElementById('consoleType').value = c.type;
+      document.getElementById('consoleYear').value = c.year;
+document.getElementById('consoleObtenue').value = c.obtenue;
+document.getElementById('consoleGeneration').value = c.generation;
+      document.getElementById('consoleImage').value = c.image;
+	
+
+    }
+
+    async function deleteConsole(id) {
+      await db.collection('consoles').doc(id).delete();
+    }
+
+    renderConsoles();
+
+    // === IMPORTER JSON ===
+  async function importerJSONCompat(data, collectionName) {
+    const ref = db.collection(collectionName);
+    for (const item of data) {
+      await ref.add(item);
+    }
+    alert(`Importation dans "${collectionName}" terminée !`);
+  }
+
+  function handleFileUploadTo(collectionName) {
+    const input = document.getElementById("jsonFile");
+
+    if (!input.files.length) {
+      alert("Sélectionne un fichier à importer.");
+      return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async function (e) {
+      try {
+        const json = JSON.parse(e.target.result);
+        if (!Array.isArray(json)) throw new Error("Le JSON doit être un tableau.");
+        await importerJSONCompat(json, collectionName);
+      } catch (err) {
+        alert("Erreur : " + err.message);
+      }
+    };
+
+    reader.readAsText(file);
+  }
+document.getElementById('importGames').addEventListener('click', () => handleFileUploadTo('games'));
+document.getElementById('importConsoles').addEventListener('click', () => handleFileUploadTo('consoles'));
+document.getElementById('importSales').addEventListener('click', () => handleFileUploadTo('sales'));
+document.getElementById('importEvents').addEventListener('click', () => handleFileUploadTo('timeline_events'));
+
+
+  // === EXPORTER JSON===
+  async function exportData() {
+    const collection = document.getElementById("exportCollection").value;
+    const snapshot = await db.collection(collection).get();
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${collection}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+document.getElementById('exportButton').addEventListener('click', exportData);
+//FILTRE
+
+  function filterAndDisplay(list, container, type, renderFn) {
+    const searchInput = document.getElementById(`search${type.charAt(0).toUpperCase() + type.slice(1)}`).value.toLowerCase();
+    container.innerHTML = '';
+
+    const filtered = list.filter(item => {
+      const values = Object.values(item.data || item).map(v => (v || '').toString().toLowerCase());
+      return values.some(value => value.includes(searchInput));
+    });
+
+    const itemsToShow = showMore[type] === Infinity ? filtered : filtered.slice(0, showMore[type]);
+
+    for (const item of itemsToShow) {
+      container.appendChild(renderFn(item));
+    }
+  }
+const resetGameBtn = document.getElementById('resetGame');
+const resetConsoleBtn = document.getElementById('resetConsole');
+
+resetGameBtn.addEventListener('click', () => {
+  gameForm.reset();
+  document.getElementById('gameId').value = '';
+  document.getElementById('borrower').style.display = 'none';
+});
+
+resetConsoleBtn.addEventListener('click', () => {
+  consoleForm.reset();
+  document.getElementById('consoleId').value = '';
+});
+
+
+  // === AFFICHER PLUS / MOINS ===
+  let showMore = {
+    games: 4,
+    consoles: 4
+  };
+  function toggleShowMore(type) {
+  const isShowingAll = showMore[type] === Infinity;
+  showMore[type] = isShowingAll ? 4 : Infinity;
+
+  const button = document.getElementById(`toggle${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  button.textContent = isShowingAll ? 'Afficher plus' : 'Afficher moins';
+
+  if (type === 'games') renderGames();
+  if (type === 'consoles') renderConsoles();
+};
+document.getElementById('toggleGames').addEventListener('click', () => toggleShowMore('games'));
+document.getElementById('toggleConsoles').addEventListener('click', () => toggleShowMore('consoles'));
+
+  }
+  </script>
+</body>
+</html>

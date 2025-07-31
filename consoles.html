@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li><a href="index.html">Home</a></li>
+    <li>Consoles</li>
+  </ol>
+</nav>
+<main>
+  <section class="section">
+    <input type="text" id="searchInput" placeholder="Rechercher une console..." class="search-bar" />
+
+    <h3>Filtres par génération</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="1ère">1ère Génération</button>
+      <button class="filter-button" data-filter="2ème">2e Génération</button>
+      <button class="filter-button" data-filter="3ème">3e Génération</button>
+      <button class="filter-button" data-filter="4ème">4e Génération</button>
+      <button class="filter-button" data-filter="5ème">5e Génération</button>
+      <button class="filter-button" data-filter="6ème">6e Génération</button>
+      <button class="filter-button" data-filter="7ème">7e Génération</button>
+      <button class="filter-button" data-filter="8ème">8e Génération</button>
+      <button class="filter-button" data-filter="9ème">9e Génération</button>
+    </div>
+
+    <h3>Filtres par Type</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="salon">Salon</button>
+      <button class="filter-button" data-filter="portable">Portable</button>
+    </div>
+
+    <h3>Réinitialiser</h3>
+    <div class="filters">
+      <button class="filter-button is-checked" data-filter="all">Toutes</button>
+    </div>
+
+    <h2>Mes consoles</h2>
+    <p id="consoleCount" class="count"></p>
+    <div class="grid"></div>
+    <p id="noResultsMessage" style="text-align: center; margin-top: 1rem; color: rgb(136, 136, 136); height: 25vh;align-items: center;display: flex;justify-content: center;">
+      Aucune console trouvée.
+    </p>
+  </section>
+</main>
+
+<div id="footer"></div>
+
+<script>
+  const grid = document.querySelector('.grid');
+  const searchInput = document.getElementById('searchInput');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const filterButtons = document.querySelectorAll('.filter-button');
+  const consoleCount = document.getElementById('consoleCount');
+
+  let consolesData = [];
+  let currentSearch = '';
+  const activeFilters = {
+    generation: [],
+    type: []
+  };
+
+  function createConsoleCard(console, id) {
+    const div = document.createElement('div');
+    const lien = `console.html?name=${encodeURIComponent(console.name)}`;
+    div.className = 'card card-console fade-in';
+    div.setAttribute('data-generation', console.generation.toLowerCase());
+    div.setAttribute('data-name', console.name.toLowerCase());
+    div.setAttribute('data-type', console.type.toLowerCase());
+
+    div.innerHTML = `
+      <img src="${console.image}" alt="${console.name}" onerror="this.src='default-console.png';" />
+      <h3>${console.name}</h3>
+      <p>${console.type}</p>
+      <a class="button button-card" href="${lien}">+</a>
+    `;
+    return div;
+  }
+
+  db.collection('consoles').orderBy('obtenue', 'desc').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      consolesData.push({ ...data, id: doc.id });
+    });
+    displayConsoles();
+  });
+
+  function displayConsoles() {
+    grid.innerHTML = '';
+
+    const filtered = consolesData.filter(console => {
+      const name = console.name.toLowerCase();
+      const gen = console.generation.toLowerCase();
+      const type = console.type.toLowerCase();
+
+      const searchMatch = name.includes(currentSearch) || gen.includes(currentSearch) || type.includes(currentSearch);
+
+      const hasGenFilter = activeFilters.generation.length > 0;
+      const hasTypeFilter = activeFilters.type.length > 0;
+
+      const generationMatch = !hasGenFilter || activeFilters.generation.some(f => gen.startsWith(f.toLowerCase()));
+      const typeMatch = !hasTypeFilter || activeFilters.type.some(f => type === f.toLowerCase());
+
+      const filterMatch = generationMatch && typeMatch;
+
+      return searchMatch && filterMatch;
+    });
+
+    noResultsMessage.style.display = filtered.length === 0 ? 'flex' : 'none';
+
+    consoleCount.textContent = `${filtered.length} console${filtered.length > 1 ? 's' : ''} affichée${filtered.length > 1 ? 's' : ''}`;
+
+    filtered.forEach(console => {
+      const card = createConsoleCard(console, console.id);
+      grid.appendChild(card);
+    });
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter');
+      const isAll = filter === 'all';
+      const isGeneration = /[1-9]e?̀?/i.test(filter.toLowerCase());
+      const isType = ['salon', 'portable'].includes(filter.toLowerCase());
+
+      if (isAll) {
+        activeFilters.generation = [];
+        activeFilters.type = [];
+        filterButtons.forEach(b => b.classList.remove('is-checked'));
+        btn.classList.add('is-checked');
+      } else {
+        const targetArray = isGeneration ? activeFilters.generation : isType ? activeFilters.type : null;
+        const filterLower = filter.toLowerCase();
+
+        if (targetArray) {
+          const index = targetArray.indexOf(filterLower);
+          if (index !== -1) {
+            targetArray.splice(index, 1);
+            btn.classList.remove('is-checked');
+          } else {
+            targetArray.push(filterLower);
+            btn.classList.add('is-checked');
+          }
+        }
+
+        document.querySelector('[data-filter="all"]').classList.remove('is-checked');
+      }
+
+      displayConsoles();
+    });
+  });
+
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value.trim().toLowerCase();
+    displayConsoles();
+  });
+</script>
+</body>
+</html>

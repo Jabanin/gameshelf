@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/script-commun.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li><a href="index.html">Home</a></li>
+    <li>Jeux Vidéo</li>
+  </ol>
+</nav>
+<main>
+  <section class="section">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Rechercher un jeu..."
+      class="search-bar"
+    />
+    <h3>Commun</h3>
+    <div class="filters">
+      <button class="filter-button" data-filter="favori">Favoris</button>
+      <button class="filter-button" data-filter="pret">Preter</button>
+      <button class="filter-button" data-filter="dispo">Disponible</button>
+    </div>
+
+    <h3>Console de Salon</h3>
+    <div class="filters filter-constructeur">
+      <div>
+        <h4>Sony</h4>
+        <button class="filter-button" data-filter="ps1">PS1</button>
+        <button class="filter-button" data-filter="ps2">PS2</button>
+        <button class="filter-button" data-filter="ps3">PS3</button>
+        <button class="filter-button" data-filter="ps4">PS4</button>
+        <button class="filter-button" data-filter="ps5">PS5</button>
+      </div>
+      <div>
+        <h4>Nintendo</h4>
+        <button class="filter-button" data-filter="nes">NES</button>
+        <button class="filter-button" data-filter="snes">SNES</button>
+        <button class="filter-button" data-filter="nintendo 64">N64</button>
+        <button class="filter-button" data-filter="gamecube">GameCube</button>
+        <button class="filter-button" data-filter="wii">WII</button>
+        <button class="filter-button" data-filter="wii u">WII U</button>
+        <button class="filter-button" data-filter="switch">Switch</button>
+        <button class="filter-button" data-filter="switch 2">Switch 2</button>
+      </div>
+      <div>
+        <h4>Microsoft</h4>
+        <button class="filter-button" data-filter="xbox">Xbox</button>
+        <button class="filter-button" data-filter="xbox 360">Xbox 360</button>
+      </div>
+      <div>
+        <h4>Atari</h4>
+        <button class="filter-button" data-filter="atari 2600">Atari 2600</button>
+      </div> 
+    </div>
+    <h3>Console Portable</h3>
+    <div class="filters filter-constructeur">
+      <div>
+        <h4>Sony</h4>
+        <button class="filter-button" data-filter="psp">PSP</button>
+      </div>
+      <div>
+        <h4>Nintendo</h4>
+        <button class="filter-button" data-filter="gameboy">GameBoy</button>
+        <button class="filter-button" data-filter="gameboy color">GameBoy Color</button>
+        <button class="filter-button" data-filter="gameboy advance">Gameboy Advance</button>
+        <button class="filter-button" data-filter="nintendo ds">Nintendo DS</button>
+        <button class="filter-button" data-filter="nintendo 3ds">Nintendo 3DS</button>
+      </div>
+    </div>
+    <h3>Tous</h3>
+    <div class="filters filters-constructeur">
+      <button class="filter-button is-checked" data-filter="all">Tous</button>
+    </div>
+
+    <h2>Mes jeux</h2>
+    <p id="gameCount" class="count"></p>
+    <div class="grid"></div>
+    <p
+      id="noResultsMessage"
+      style="text-align: center; margin-top: 1rem; color: rgb(136, 136, 136); height: 25vh; align-items: center; display: flex; justify-content: center;"
+    >
+      Aucun résultat trouvé.
+    </p>
+  </section>
+</main>
+
+<div id="footer"></div>
+
+<script>
+  const gamesGrid = document.querySelector('.grid');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const searchInput = document.getElementById('searchInput');
+  const filterButtons = document.querySelectorAll('.filter-button');
+
+  let gamesData = [];
+  let activeConsoleFilters = new Set();
+  let activeStatusFilters = new Set();
+  let currentSearch = '';
+
+  function createGameCard(game, id) {
+    const div = document.createElement('div');
+    div.className =
+      (game.console || '').toLowerCase() +
+      ' card card-jeu ' +
+      (game.favorite ? 'favori ' : '') +
+      (game.status === 'Prêté' ? 'pret ' : 'dispo ');
+    div.setAttribute('data-id', id);
+    div.setAttribute('data-name', game.name.toLowerCase());
+    div.setAttribute('data-genre', game.genre.toLowerCase());
+    div.setAttribute('data-console', (game.console || '').toLowerCase());
+    div.setAttribute('data-favori', game.favorite ? 'true' : 'false');
+    div.setAttribute('data-status', game.status ? game.status.toLowerCase() : 'dispo');
+
+    div.innerHTML = `
+      <img src="${game.image}" alt="${game.name}" onerror="this.src='default-image.png';" />
+      <h3>${game.name}</h3>
+      <p>${game.genre}</p>
+      <a class="button button-card" href="jeu.html?id=${id}">+</a>
+      
+      <span style="color:gold;position:relative;bottom:-35px;">
+        ${
+          game.favorite
+            ? '<img src="img/star.png" alt="Favori" style="width:60px;height:60px;vertical-align:middle;margin:0;filter: drop-shadow(0px 0px 3px yellow)">'
+            : ''
+        }
+      </span>
+    `;
+    return div;
+  }
+
+  db.collection('games')
+    .orderBy('obtenue', 'desc')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const game = doc.data();
+        gamesData.push({ ...game, id: doc.id });
+      });
+      displayGames();
+    });
+
+  function displayGames() {
+    gamesGrid.innerHTML = '';
+
+    const filteredGames = gamesData.filter((game) => {
+      const consoleOk =
+        activeConsoleFilters.size === 0 ||
+        activeConsoleFilters.has((game.console || '').toLowerCase());
+
+      const statusOk = [...activeStatusFilters].every((filter) => {
+        if (filter === 'favori') return game.favorite;
+        if (filter === 'pret') return game.status?.toLowerCase() === 'prêté';
+        if (filter === 'dispo') return game.status?.toLowerCase() !== 'prêté';
+        return true;
+      });
+
+      const searchOk =
+        !currentSearch ||
+        game.name.toLowerCase().includes(currentSearch) ||
+        (game.genre && game.genre.toLowerCase().includes(currentSearch));
+
+      return consoleOk && statusOk && searchOk;
+    });
+
+    // Mise à jour du compteur
+    const gameCountEl = document.getElementById('gameCount');
+    gameCountEl.textContent = `${filteredGames.length} jeu${filteredGames.length > 1 ? 'x' : ''} affiché${filteredGames.length > 1 ? 's' : ''}`;
+
+    noResultsMessage.style.display = filteredGames.length === 0 ? 'flex' : 'none';
+
+    filteredGames.forEach((game) => {
+      const card = createGameCard(game, game.id);
+      gamesGrid.appendChild(card);
+    });
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter');
+
+      if (filter === 'all') {
+        activeConsoleFilters.clear();
+        activeStatusFilters.clear();
+        currentSearch = '';
+        searchInput.value = '';
+        filterButtons.forEach(b => b.classList.remove('is-checked'));
+        btn.classList.add('is-checked');
+      } else {
+        btn.classList.toggle('is-checked');
+
+        if (['favori', 'pret', 'dispo'].includes(filter)) {
+          if (activeStatusFilters.has(filter)) {
+            activeStatusFilters.delete(filter);
+          } else {
+            activeStatusFilters.add(filter);
+          }
+        } else {
+          if (activeConsoleFilters.has(filter)) {
+            activeConsoleFilters.delete(filter);
+          } else {
+            activeConsoleFilters.add(filter);
+          }
+        }
+
+        filterButtons.forEach(b => {
+          if (b.getAttribute('data-filter') === 'all') {
+            b.classList.remove('is-checked');
+          }
+        });
+
+        if (activeConsoleFilters.size === 0 && activeStatusFilters.size === 0 && currentSearch === '') {
+          filterButtons.forEach(b => {
+            if (b.getAttribute('data-filter') === 'all') {
+              b.classList.add('is-checked');
+            }
+          });
+        }
+      }
+
+      displayGames();
+    });
+  });
+
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value.trim().toLowerCase();
+
+    if (currentSearch !== '') {
+      filterButtons.forEach(b => {
+        if (b.getAttribute('data-filter') === 'all') {
+          b.classList.remove('is-checked');
+        }
+      });
+    }
+
+    displayGames();
+  });
+</script>
+</body>
+</html>

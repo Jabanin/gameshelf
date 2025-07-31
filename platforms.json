@@ -1,0 +1,626 @@
+[
+  {
+    "SpecificationId": "atari_8bit",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "cb01cd76-39eb-4778-b1e3-c1cd9d1b9d07",
+    "Name": "Atari 8-bit"
+  },
+  {
+    "SpecificationId": "nintendo_nes",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "1b0ba4b2-42a2-48e3-8427-4a2f0f863049",
+    "Name": "Nintendo Entertainment System"
+  },
+  {
+    "SpecificationId": "coleco_vision",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "3487e2d4-a221-4040-8057-6809d338a824",
+    "Name": "Coleco ColecoVision"
+  },
+  {
+    "SpecificationId": "sony_playstation",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "033a1b9e-e9ac-4c89-becc-6b8db3f1e25b",
+    "Name": "Sony PlayStation"
+  },
+  {
+    "SpecificationId": "commodore_vci20",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "eab865cd-e42f-45bc-b6ae-3986b23ae68d",
+    "Name": "Commodore VIC20"
+  },
+  {
+    "SpecificationId": "sega_dreamcast",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "99d0fbea-2981-4e6f-b768-84547f617ee6",
+    "Name": "Sega Dreamcast"
+  },
+  {
+    "SpecificationId": "nintendo_64",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "1d75f5f8-3c6a-45ab-ab00-eefc15d08a1d",
+    "Name": "Nintendo 64"
+  },
+  {
+    "SpecificationId": "atari_2600",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2c9eb6c8-adb6-4890-accb-c98870a73eb4",
+    "Name": "Atari 2600"
+  },
+  {
+    "SpecificationId": "apple_2",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2b5baf47-8de8-4286-9c50-07f0fa3936a9",
+    "Name": "Apple II"
+  },
+  {
+    "SpecificationId": "magnavox_odyssey_2",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "765661ee-f647-4e17-935b-0d39a50bbec4",
+    "Name": "Magnavox Odyssey 2"
+  },
+  {
+    "SpecificationId": "sharp_x68000",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "95d9105e-a0f3-4547-984a-30b69b3d6df7",
+    "Name": "Sharp X68000"
+  },
+  {
+    "SpecificationId": "pc_dos",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "89eff084-5375-4a63-91b2-5245c841c877",
+    "Name": "PC (DOS)"
+  },
+  {
+    "SpecificationId": "nintendo_gameboyadvance",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "f9cca888-5f68-463a-ac32-94d249784062",
+    "Name": "Nintendo Game Boy Advance"
+  },
+  {
+    "SpecificationId": "sony_playstation4",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "5e2c3f56-eed5-416c-b6a5-8a0031c1704a",
+    "Name": "Sony PlayStation 4"
+  },
+  {
+    "SpecificationId": "bandai_wonderswan_color",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "869dd700-7630-474f-80b9-aaab4c975fe0",
+    "Name": "Bandai WonderSwan Color"
+  },
+  {
+    "SpecificationId": "sony_vita",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "ba5ec4ec-ba98-4e54-a051-f66d02a7d235",
+    "Name": "Sony PlayStation Vita"
+  },
+  {
+    "SpecificationId": "pokemon_mini",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "a063caa3-aa70-44d8-860a-237f989f2c05",
+    "Name": "Pokémon mini"
+  },
+  {
+    "SpecificationId": "sega_cd",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "44309b8c-a645-4b34-b61f-3357f760496e",
+    "Name": "Sega CD"
+  },
+  {
+    "SpecificationId": "nec_turbografx_16",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "bed2d3d0-4781-4f22-844f-75d460adcee4",
+    "Name": "NEC TurboGrafx 16"
+  },
+  {
+    "SpecificationId": "snk_neogeo_cd",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "ac6f1bda-f2b5-4895-af00-64f22d697cd1",
+    "Name": "SNK Neo Geo CD"
+  },
+  {
+    "SpecificationId": "mattel_intellivision",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "f94e56dd-4121-4c96-804a-8ff0845b1811",
+    "Name": "Mattel Intellivision"
+  },
+  {
+    "SpecificationId": "xbox360",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "89e9d9ec-bc57-49c4-9444-ed403b776ff6",
+    "Name": "Microsoft Xbox 360"
+  },
+  {
+    "SpecificationId": "atari_st",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "3ba44316-3bc0-4ff9-816c-13048214fcda",
+    "Name": "Atari ST/STE"
+  },
+  {
+    "SpecificationId": "nec_supergrafx",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "cb173f4f-5492-4791-99bb-2b6a06a9d6f6",
+    "Name": "NEC SuperGrafx"
+  },
+  {
+    "SpecificationId": "sega_32x",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "00e9c54d-f6d9-4e43-9354-3208a8bd3bf5",
+    "Name": "Sega 32X"
+  },
+  {
+    "SpecificationId": "nintendo_dsi",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "470b5d09-5236-40a3-94b9-41f435c90d4a",
+    "Name": "Nintendo DSi"
+  },
+  {
+    "SpecificationId": "nintendo_famicom_disk",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "c9b74d49-ded1-4350-a8a6-e7fc0a4ba68a",
+    "Name": "Nintendo Family Computer Disk System"
+  },
+  {
+    "SpecificationId": "nintendo_switch2",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "a0c607b9-8524-4346-9457-5a729d05663a",
+    "Name": "Nintendo Switch 2"
+  },
+  {
+    "SpecificationId": "vectrex",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "765b695a-0074-46d1-a81a-da41f684d3ac",
+    "Name": "GCE Vectrex"
+  },
+  {
+    "SpecificationId": "nintendo_gameboycolor",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "5dcdf294-4ac6-477a-a3c6-f2877415f7b7",
+    "Name": "Nintendo Game Boy Color"
+  },
+  {
+    "SpecificationId": "atari_jaguar",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "c8402d5a-3ca0-43f9-8bd4-c066f46bdb0a",
+    "Name": "Atari Jaguar"
+  },
+  {
+    "SpecificationId": "xbox",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2e6e2305-3899-4df9-8b22-ef9a965a9209",
+    "Name": "Microsoft Xbox"
+  },
+  {
+    "SpecificationId": "3do",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "5a128978-dbaf-4b59-bd8b-12020dcb6053",
+    "Name": "3DO Interactive Multiplayer"
+  },
+  {
+    "SpecificationId": "nintendo_gamecube",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "1d4a0b84-1974-44e6-aadf-a72769175586",
+    "Name": "Nintendo GameCube"
+  },
+  {
+    "SpecificationId": "bandai_wonderswan",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "0f413ac8-9c6e-4bb1-b11c-53c78abeed89",
+    "Name": "Bandai WonderSwan"
+  },
+  {
+    "SpecificationId": "nintendo_ds",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "56d4e4fd-2c89-46dc-80ef-fb4073921131",
+    "Name": "Nintendo DS"
+  },
+  {
+    "SpecificationId": "xbox_one",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "395e55e6-2a57-4ae2-92c9-550e903823dd",
+    "Name": "Microsoft Xbox One"
+  },
+  {
+    "SpecificationId": "nintendo_switch",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "8e6249ec-4ac4-480d-b9b2-f75320e5b881",
+    "Name": "Nintendo Switch"
+  },
+  {
+    "SpecificationId": "nec_turbografx_cd",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "74dc2b2a-357b-435e-8f6b-4c4c3b906168",
+    "Name": "NEC TurboGrafx-CD"
+  },
+  {
+    "SpecificationId": "thomson_mo5",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "f1478b76-c725-4f81-b1f7-4c3377ac2dc7",
+    "Name": "Thomson MO5"
+  },
+  {
+    "SpecificationId": "snk_neogeo_aes",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2459fe78-d13c-4d8d-a0f4-28b8e943ff6f",
+    "Name": "SNK Neo Geo AES"
+  },
+  {
+    "SpecificationId": "amstrad_cpc",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "6aed93d4-6042-47fc-8a6f-4ffe313a25da",
+    "Name": "Amstrad CPC"
+  },
+  {
+    "SpecificationId": "nintendo_super_nes",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "32412567-881f-4e0a-b7cf-6b5b61352578",
+    "Name": "Nintendo SNES"
+  },
+  {
+    "SpecificationId": "sony_playstation2",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2e675965-d38d-4f94-bf5b-c08b081d29e6",
+    "Name": "Sony PlayStation 2"
+  },
+  {
+    "SpecificationId": "microsoft_msx2",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "fd83184b-030b-457f-8d0e-70201e5f5411",
+    "Name": "Microsoft MSX2"
+  },
+  {
+    "SpecificationId": "commodore_pet",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "3e194ec9-07b1-4218-9f61-4bf28a89b6b7",
+    "Name": "Commodore PET"
+  },
+  {
+    "SpecificationId": "snk_neogeopocket_color",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "75dd0a69-996a-4ac4-b5f3-2b33d022214c",
+    "Name": "SNK Neo Geo Pocket Color"
+  },
+  {
+    "SpecificationId": "sega_genesis",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "b215eeac-9cfc-4e4c-aeac-a379c0a4968b",
+    "Name": "Sega Genesis"
+  },
+  {
+    "SpecificationId": "philips_cdi",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "411fea68-078f-4f66-b69c-d704466f5d38",
+    "Name": "Philips CD-i"
+  },
+  {
+    "SpecificationId": "pc_linux",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "b2b3051e-852f-4fc8-bbe8-8bac90feaf32",
+    "Name": "PC (Linux)"
+  },
+  {
+    "SpecificationId": "nintendo_wii",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "fd043319-6a52-436b-8301-5865ce86451e",
+    "Name": "Nintendo Wii"
+  },
+  {
+    "SpecificationId": "microsoft_msx",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "50072b9d-4d42-4fa9-a031-b1a1eb92de5f",
+    "Name": "Microsoft MSX"
+  },
+  {
+    "SpecificationId": "sony_psp",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "2a5e9900-c9d2-440f-9c8d-549008b8a05f",
+    "Name": "Sony PlayStation Portable"
+  },
+  {
+    "SpecificationId": "sega_sg1000",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "bbff38e6-80d9-491e-83ce-072d94638042",
+    "Name": "Sega SG-1000"
+  },
+  {
+    "SpecificationId": "nintendo_wiiu",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "8db7ddeb-9d7a-45a3-b179-5e39821da7d4",
+    "Name": "Nintendo Wii U"
+  },
+  {
+    "SpecificationId": "nec_pcfx",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "cf9fc09d-1ca5-4f90-a033-c4d7e3081b10",
+    "Name": "NEC PC-FX"
+  },
+  {
+    "SpecificationId": "sega_mastersystem",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "255d5667-7a37-4101-ac37-4c1ffa448c8b",
+    "Name": "Sega Master System"
+  },
+  {
+    "SpecificationId": "nintendo_gameboy",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "59c29573-5140-40e5-a190-5ec10bb18388",
+    "Name": "Nintendo Game Boy"
+  },
+  {
+    "SpecificationId": "pc_windows",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "65e7e523-32f9-4fa1-b690-f9550a5f5b52",
+    "Name": "PC (Windows)"
+  },
+  {
+    "SpecificationId": "sinclair_zx81",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "99995ee9-f211-4211-b625-6f25c3d994f2",
+    "Name": "Sinclair ZX81"
+  },
+  {
+    "SpecificationId": "sega_saturn",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "5792fcc3-d92d-4a43-8dde-f2480a3c6daa",
+    "Name": "Sega Saturn"
+  },
+  {
+    "SpecificationId": "sega_gamegear",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "29ede482-cadc-42e4-bb0b-85865f6973e0",
+    "Name": "Sega Game Gear"
+  },
+  {
+    "SpecificationId": "xbox_series",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "b0fc6bf4-97b3-4705-ae7e-7e5239d67800",
+    "Name": "Microsoft Xbox Series"
+  },
+  {
+    "SpecificationId": "nintendo_virtualboy",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "40cc55c2-4e28-4c71-97a7-97b0a808773a",
+    "Name": "Nintendo Virtual Boy"
+  },
+  {
+    "SpecificationId": "atari_5200",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "a8b383dd-9e57-407b-8335-79067b2b227d",
+    "Name": "Atari 5200"
+  },
+  {
+    "SpecificationId": "atari_lynx",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "fca0f60c-1cd1-4f67-b81b-06e2293eda72",
+    "Name": "Atari Lynx"
+  },
+  {
+    "SpecificationId": "sinclair_zxspectrum",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "a89c9a57-b312-423b-a060-2d8002e338ea",
+    "Name": "Sinclair ZX Spectrum"
+  },
+  {
+    "SpecificationId": "atari_7800",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "b9c955e2-26f2-4cb0-a5ac-59d66a33664b",
+    "Name": "Atari 7800"
+  },
+  {
+    "SpecificationId": "nintendo_3ds",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "e2c1d214-46f3-4a4f-8c92-90989602411c",
+    "Name": "Nintendo 3DS"
+  },
+  {
+    "SpecificationId": "macintosh",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "13a85a60-c085-4365-8ecd-7aa3eb510de0",
+    "Name": "Macintosh"
+  },
+  {
+    "SpecificationId": "commodore_amiga",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "0b915ad1-a4ee-41a4-98bd-952b44fdfa97",
+    "Name": "Commodore Amiga"
+  },
+  {
+    "SpecificationId": "commodore_amiga_cd32",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "d8a63b8a-167e-42aa-b87e-eeb3f93cee24",
+    "Name": "Commodore Amiga CD32"
+  },
+  {
+    "SpecificationId": "commodore_64",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "76f9b754-92dd-4446-ad34-24c6fec8d3d0",
+    "Name": "Commodore 64"
+  },
+  {
+    "SpecificationId": "snk_neogeopocket",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "b7d36f85-339e-42cd-9536-683aedbdc6cf",
+    "Name": "SNK Neo Geo Pocket"
+  },
+  {
+    "SpecificationId": "commodore_plus4",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "a7b4dd80-69f6-4219-bb55-1c49a9fd87ea",
+    "Name": "Commodore Plus/4"
+  },
+  {
+    "SpecificationId": "nec_pc98",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "5fe13845-fcd8-4576-8c11-7d400998985f",
+    "Name": "NEC PC-98"
+  },
+  {
+    "SpecificationId": "sony_playstation3",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "dcd8b570-fed6-423b-b307-a0998c2d2c01",
+    "Name": "Sony PlayStation 3"
+  },
+  {
+    "SpecificationId": "sony_playstation5",
+    "Icon": null,
+    "Cover": null,
+    "Background": null,
+    "Id": "00a55a64-ea4d-429b-90b7-ad54d0a9a8c3",
+    "Name": "Sony PlayStation 5"
+  }
+]

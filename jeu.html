@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <title>GameShelf</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <script src="js/script-commun.js"></script>
+  <script src="js/breadcrumbs-jeu.js"></script>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <nav aria-label="Breadcrumb" class="breadcrumb">
+    <ol>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="jeux.html">Jeux</a></li>
+    </ol>
+  </nav>
+
+  <main class="section">
+    <div id="Titre"></div>
+
+    <div class="details">
+      <div id="jeuImage"></div>
+      <div id="jeuDetails"></div>
+    </div>
+
+    <div class="resume">
+      <h2>Le résumé</h2>
+      <div id="jeuResume"></div>
+    </div>
+
+    <section id="similarGamesSection" style="margin-top:3rem;">
+      <h2>Jeux du même genre</h2>
+      <div id="similarGamesGrid" class="grid"></div>
+      <div id="noneGenre"></div>
+    </section>
+  </main>
+<div id="footer"></div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    if (id) {
+      db.collection("games").doc(id).get().then(doc => {
+        if (doc.exists) {
+          const game = doc.data();
+
+          // Titre
+          document.getElementById("Titre").innerHTML = `<h2>${game.name}</h2>`;
+
+          // Image
+          document.getElementById("jeuImage").innerHTML =
+            `<img src="${game.image}" alt="${game.name}" onerror="this.src='default-image.png';">`;
+
+          // Détails (avec consoleLink à remplacer dynamiquement)
+          document.getElementById("jeuDetails").innerHTML = `
+            <p id="consoleLink"><strong>Console :</strong> ${game.console}</p>
+            <p><strong>Genre :</strong> ${game.genre}</p>
+            <p><strong>Développeur :</strong> ${game.developpeur}</p>
+            <p><strong>Éditeur :</strong> ${game.editeur}</p>
+            <p><strong>Année de sortie :</strong> ${game.year}</p>
+            <p><strong>Matériel :</strong> ${game.materiel}</p>
+            <p><strong>Statut :</strong> ${game.status}</p>
+            <p><strong>Emprunté par :</strong> ${game.borrower || '—'}</p>
+            <p><strong>Obtenu en :</strong> ${game.obtenue ? game.obtenue.slice(0, 4) : '—'}</p>
+            <p><strong>Mon avis :</strong> <br>${game.avis}</p>
+            <p><strong>Note :</strong> ${game.rating} / 10</p>
+            ${game.favorite ? '<p><img src="img/star.png" alt="Favori" style="width:30px;"></p>' : ''}
+          `;
+
+          // Résumé
+          document.getElementById("jeuResume").innerHTML = `<p>${game.resume}</p>`;
+
+          // Vérifie si la console existe et remplace le texte par un lien
+          db.collection("consoles")
+            .where("name", "==", game.console)
+            .get()
+            .then(snapshot => {
+              if (!snapshot.empty) {
+                const lienConsole = document.createElement('a');
+                lienConsole.href = `console.html?name=${encodeURIComponent(game.console)}`;
+                lienConsole.textContent = game.console;
+
+                const consoleCell = document.getElementById("consoleLink");
+                consoleCell.innerHTML = "<strong>Console :</strong> ";
+                consoleCell.appendChild(lienConsole);
+              }
+            });
+
+          // Jeux du même genre
+          const genre = game.genre?.toLowerCase();
+          if (genre) {
+            afficherJeuxSimilaires(id, genre);
+          }
+
+        } else {
+          document.getElementById("Titre").textContent = "Jeu introuvable.";
+          document.getElementById("jeuImage").textContent = "";
+          document.getElementById("jeuDetails").textContent = "";
+          document.getElementById("jeuResume").textContent = "";
+        }
+      });
+    }
+
+    // Fonction d'affichage des jeux similaires
+    function afficherJeuxSimilaires(currentId, genre) {
+      db.collection('games').get().then(snapshot => {
+        const similarGames = [];
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (doc.id !== currentId && data.genre?.toLowerCase() === genre) {
+            similarGames.push({ ...data, id: doc.id });
+          }
+        });
+
+        const grid = document.getElementById('similarGamesGrid');
+        const noneGenre = document.getElementById('noneGenre');
+        grid.innerHTML = '';
+        noneGenre.innerHTML = '';
+
+        if (similarGames.length === 0) {
+          noneGenre.innerHTML = '<p style="text-align:center;color:#888;">Aucun autre jeu de ce genre.</p>';
+          return;
+        }
+
+        similarGames.forEach(game => {
+          const div = document.createElement('div');
+          div.className = 'card card-jeu';
+          div.innerHTML = `
+            <img src="${game.image}" alt="${game.name}" onerror="this.src='default-image.png';" />
+            <h3>${game.name}</h3>
+            <p>${game.genre}</p>
+            <a class="button button-card" href="jeu.html?id=${game.id}">+</a>
+          `;
+          grid.appendChild(div);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
