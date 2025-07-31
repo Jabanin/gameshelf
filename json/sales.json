@@ -1,0 +1,8 @@
+[
+  {"annee": "Année 1970", "name": "Pong","ordre":1},
+  {"annee": "Année 1980", "name": "Super Mario Bros.","ordre":2},
+  {"annee": "Année 1990", "name": "Pokémon Rouge / Bleu / Vert","ordre":3},
+  {"annee": "Année 2000", "name": "Wii Sports","ordre":4},
+  {"annee": "Année 2010", "name": "Minecraft","ordre":5},
+  {"annee": "Année 2020", "name": "Grand Theft Auto 6","ordre":6}
+]

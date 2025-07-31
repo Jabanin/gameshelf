@@ -1,0 +1,47 @@
+  [
+    {
+      "generation":"6ème",
+      "obtenue":"2010",
+      "fabricant":"Microsoft",
+    "name": "Xbox",
+    "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Xbox-Console-Set.png/1920px-Xbox-Console-Set.png",
+    "type": "Salon",
+    "year":  2002
+  },
+{
+      "generation":"7ème",
+      "obtenue":"2012",
+      "fabricant":"Microsoft",
+    "name": "Xbox 360",
+    "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Xbox-360-Consoles-Infobox.png/800px-Xbox-360-Consoles-Infobox.png",
+    "type": "Salon",
+    "year":  2005
+  },
+  {
+      "generation":"4ème",
+      "obtenue":"2000",
+      "fabricant":"Nintendo",
+    "name": "GameBoy",
+    "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Game-Boy-Original.jpg/800px-Game-Boy-Original.jpg",
+    "type": "Portable",
+    "year":  1990
+  },
+   {
+      "generation":"4ème",
+      "obtenue":"2022",
+      "fabricant":"Nintendo",
+    "name": "GameBoy Pocket",
+    "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Game-Boy-Original.jpg/800px-Game-Boy-Original.jpg",
+    "type": "Portable",
+    "year":  1995
+  },
+  {
+      "generation":"5ème",
+      "obtenue":"2023",
+      "fabricant":"Nintendo",
+    "name": "GameBoy Color",
+    "image":"https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Nintendo-Game-Boy-Color-FL.png/800px-Nintendo-Game-Boy-Color-FL.png",
+    "type": "Portable",
+    "year":  1998
+  }
+]

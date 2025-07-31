@@ -1,0 +1,505 @@
+[
+  {
+    "nom": "Sony Interactive Entertainment",
+    "type": "éditeur/développeur",
+    "adresse": "San Mateo, Californie, USA",
+    "lat": 37.5485,
+    "lng": -122.3135,
+    "ca": "31,7 Md USD",
+    "consoles": [
+      "PlayStation 5",
+      "PlayStation 4"
+    ],
+    "jeux": [
+      "God of War",
+      "Horizon",
+      "Uncharted"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Sony+Interactive+Entertainment"
+  },
+  {
+    "nom": "Tencent Interactive Entertainment",
+    "type": "éditeur",
+    "adresse": "Shenzhen, Guangdong, Chine",
+    "lat": 22.5431,
+    "lng": 114.0579,
+    "ca": "27,1 Md USD",
+    "consoles": [
+      "PC",
+      "Console",
+      "Mobile"
+    ],
+    "jeux": [
+      "League of Legends",
+      "PUBG Mobile",
+      "Honor of Kings"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Tencent+Interactive+Entertainment"
+  },
+  {
+    "nom": "Microsoft Gaming",
+    "type": "éditeur/développeur",
+    "adresse": "Redmond, Washington, USA",
+    "lat": 47.674,
+    "lng": -122.1215,
+    "ca": "21,5 Md USD",
+    "consoles": [
+      "Xbox Series X/S",
+      "Xbox One",
+      "PC"
+    ],
+    "jeux": [
+      "Halo",
+      "Minecraft",
+      "Forza"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Microsoft+Gaming"
+  },
+  {
+    "nom": "Nintendo",
+    "type": "éditeur/développeur",
+    "adresse": "Kyoto, Japon",
+    "lat": 34.9858,
+    "lng": 135.758,
+    "ca": "11,6 Md USD",
+    "consoles": [
+      "Switch",
+      "Wii",
+      "DS"
+    ],
+    "jeux": [
+      "Mario",
+      "Zelda",
+      "Animal Crossing"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Nintendo"
+  },
+  {
+    "nom": "NetEase Games",
+    "type": "éditeur/développeur",
+    "adresse": "Hangzhou, Zhejiang, Chine",
+    "lat": 30.2741,
+    "lng": 120.1551,
+    "ca": "11,5 Md USD",
+    "consoles": [
+      "PC",
+      "Mobile"
+    ],
+    "jeux": [
+      "Fantasy Westward Journey",
+      "Marvel Rivals"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=NetEase+Games"
+  },
+  {
+    "nom": "Electronic Arts",
+    "type": "éditeur/développeur",
+    "adresse": "Redwood City, Californie, USA",
+    "lat": 37.4852,
+    "lng": -122.2364,
+    "ca": "7,3 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "FIFA",
+      "Battlefield",
+      "The Sims"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Electronic+Arts"
+  },
+  {
+    "nom": "Epic Games",
+    "type": "éditeur/développeur",
+    "adresse": "Cary, Caroline du Nord, USA",
+    "lat": 35.7915,
+    "lng": -78.7811,
+    "ca": "6,0 Md USD",
+    "consoles": [
+      "PC",
+      "PlayStation",
+      "Xbox"
+    ],
+    "jeux": [
+      "Fortnite",
+      "Unreal Tournament",
+      "Rocket League"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Epic+Games"
+  },
+  {
+    "nom": "Take-Two Interactive",
+    "type": "éditeur",
+    "adresse": "New York, NY, USA",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "ca": "5,6 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "GTA",
+      "Red Dead Redemption",
+      "NBA 2K"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Take-Two+Interactive"
+  },
+  {
+    "nom": "miHoYo / HoYoverse",
+    "type": "développeur",
+    "adresse": "Shanghai, Chine",
+    "lat": 31.2304,
+    "lng": 121.4737,
+    "ca": "4,7 Md USD",
+    "consoles": [
+      "PC",
+      "Mobile",
+      "Console"
+    ],
+    "jeux": [
+      "Genshin Impact",
+      "Honkai: Star Rail"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=miHoYo+/+HoYoverse"
+  },
+  {
+    "nom": "Roblox Corporation",
+    "type": "éditeur/développeur",
+    "adresse": "San Mateo, Californie, USA",
+    "lat": 37.5485,
+    "lng": -122.3135,
+    "ca": "3,6 Md USD",
+    "consoles": [
+      "PC",
+      "Console",
+      "Mobile"
+    ],
+    "jeux": [
+      "Roblox (plateforme)"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Roblox+Corporation"
+  },
+  {
+    "nom": "Nexon",
+    "type": "éditeur/développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6285,
+    "lng": 139.7401,
+    "ca": "3,0 Md USD",
+    "consoles": [
+      "PC",
+      "Mobile"
+    ],
+    "jeux": [
+      "MapleStory",
+      "Dungeon Fighter"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Nexon"
+  },
+  {
+    "nom": "Bandai Namco Entertainment",
+    "type": "éditeur/développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "ca": "3,05 Md USD",
+    "consoles": [
+      "Multi plateforme"
+    ],
+    "jeux": [
+      "Tekken",
+      "Dark Souls",
+      "Pac-Man"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Bandai+Namco+Entertainment"
+  },
+  {
+    "nom": "Ubisoft",
+    "type": "éditeur/développeur",
+    "adresse": "Montreuil, France",
+    "lat": 48.8566,
+    "lng": 2.4433,
+    "ca": "1,99 Md USD",
+    "consoles": [
+      "Multi plateforme"
+    ],
+    "jeux": [
+      "Assassin’s Creed",
+      "Far Cry",
+      "Rainbow Six"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Ubisoft"
+  },
+  {
+    "nom": "Konami",
+    "type": "éditeur/développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "ca": "1,99 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Metal Gear Solid",
+      "Castlevania",
+      "PES"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Konami"
+  },
+  {
+    "nom": "Krafton",
+    "type": "éditeur/développeur",
+    "adresse": "Séoul, Corée du Sud",
+    "lat": 37.5665,
+    "lng": 126.978,
+    "ca": "1,95 Md USD",
+    "consoles": [
+      "PC",
+      "Mobile",
+      "Console"
+    ],
+    "jeux": [
+      "PUBG",
+      "Tera"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Krafton"
+  },
+  {
+    "nom": "Sega",
+    "type": "éditeur/développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "ca": "1,57 Md USD",
+    "consoles": [
+      "Multi plateforme"
+    ],
+    "jeux": [
+      "Sonic",
+      "Yakuza",
+      "Total War"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Sega"
+  },
+  {
+    "nom": "Square Enix",
+    "type": "éditeur/développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "ca": "1,499 Md USD",
+    "consoles": [
+      "Multi plateforme"
+    ],
+    "jeux": [
+      "Final Fantasy",
+      "Dragon Quest",
+      "Kingdom Hearts"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Square+Enix"
+  },
+  {
+    "nom": "Embracer Group",
+    "type": "éditeur",
+    "adresse": "Karlstad, Suède",
+    "lat": 59.3793,
+    "lng": 13.5039,
+    "ca": "1,265 Md USD",
+    "consoles": [
+      "Multi plateforme"
+    ],
+    "jeux": [
+      "Saints Row",
+      "Borderlands",
+      "Dead Island"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Embracer+Group"
+  },
+  {
+    "nom": "Capcom",
+    "type": "éditeur/développeur",
+    "adresse": "Osaka, Japon",
+    "lat": 34.6937,
+    "lng": 135.5023,
+    "ca": "2,4 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Resident Evil",
+      "Monster Hunter",
+      "Street Fighter"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Capcom"
+  },
+  {
+    "nom": "Xbox Game Studios",
+    "type": "éditeur/développeur",
+    "adresse": "Redmond, Washington, USA",
+    "lat": 47.674,
+    "lng": -122.1215,
+    "ca": "≈2,1 Md USD",
+    "consoles": [
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Gears of War",
+      "Forza",
+      "Halo"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Xbox+Game+Studios"
+  },
+  {
+    "nom": "Rockstar Games",
+    "type": "développeur",
+    "adresse": "New York, USA",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "ca": "≈1,9 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "GTA",
+      "Red Dead Redemption"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Rockstar+Games"
+  },
+  {
+    "nom": "Activision",
+    "type": "éditeur",
+    "adresse": "Santa Monica, USA",
+    "lat": 34.0195,
+    "lng": -118.4912,
+    "ca": "≈1,8 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Call of Duty",
+      "Warcraft",
+      "Diablo"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Activision"
+  },
+  {
+    "nom": "FromSoftware",
+    "type": "développeur",
+    "adresse": "Tokyo, Japon",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "ca": "≈1,5 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Dark Souls",
+      "Elden Ring",
+      "Armored Core"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=FromSoftware"
+  },
+  {
+    "nom": "CD Projekt Red",
+    "type": "développeur",
+    "adresse": "Varsovie, Pologne",
+    "lat": 52.2297,
+    "lng": 21.0122,
+    "ca": "≈1,4 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "The Witcher",
+      "Cyberpunk 2077"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=CD+Projekt+Red"
+  },
+  {
+    "nom": "Paradox Interactive",
+    "type": "éditeur/développeur",
+    "adresse": "Stockholm, Suède",
+    "lat": 59.3293,
+    "lng": 18.0686,
+    "ca": "≈1,4 Md USD",
+    "consoles": [
+      "PC"
+    ],
+    "jeux": [
+      "Crusader Kings",
+      "Stellaris",
+      "Europa Universalis"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Paradox+Interactive"
+  },
+  {
+    "nom": "Valve Corporation",
+    "type": "éditeur/développeur",
+    "adresse": "Bellevue, Washington, USA",
+    "lat": 47.615,
+    "lng": -122.192,
+    "ca": "≈6–13 Md USD",
+    "consoles": [
+      "PC"
+    ],
+    "jeux": [
+      "Half-Life",
+      "Counter-Strike",
+      "Portal"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Valve+Corporation"
+  },
+  {
+    "nom": "Riot Games",
+    "type": "développeur",
+    "adresse": "Los Angeles, USA",
+    "lat": 34.0522,
+    "lng": -118.2437,
+    "ca": "≈1,5 Md USD",
+    "consoles": [
+      "PC"
+    ],
+    "jeux": [
+      "League of Legends",
+      "Valorant"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Riot+Games"
+  },
+  {
+    "nom": "Warner Bros. Games",
+    "type": "éditeur/développeur",
+    "adresse": "Burbank, Californie, USA",
+    "lat": 34.1808,
+    "lng": -118.3089,
+    "ca": "≈1,6 Md USD",
+    "consoles": [
+      "PlayStation",
+      "Xbox",
+      "PC"
+    ],
+    "jeux": [
+      "Mortal Kombat",
+      "Batman Arkham",
+      "LEGO Games"
+    ],
+    "image": "https://via.placeholder.com/300x100.png?text=Warner+Bros.+Games"
+  }
+]

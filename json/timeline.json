@@ -1,0 +1,62 @@
+[
+  {
+    "ordre": 1,
+    "annee": 1958,
+    "evenement": "Création de Tennis for Two par William Higinbotham",
+    "description": "Considéré comme un des premiers jeux vidéo interactifs, joué sur un oscilloscope."
+  },
+  {
+    "ordre": 2,
+    "annee": 1972,
+    "evenement": "Lancement de la console Magnavox Odyssey",
+    "description": "Première console de salon commercialisée, début du jeu vidéo à domicile."
+  },
+  {
+    "ordre": 3,
+    "annee": 1972,
+    "evenement": "Sortie de Pong par Atari",
+    "description": "Premier jeu vidéo à succès commercial, début de l’industrie du jeu vidéo."
+  },
+  {
+    "ordre": 4,
+    "annee": 1980,
+    "evenement": "Sortie mondiale de Pac-Man par Namco",
+    "description": "Symbole de la culture pop et popularisation mondiale du jeu vidéo."
+  },
+  {
+    "ordre": 5,
+    "annee": 1983,
+    "evenement": "Krach du jeu vidéo aux États-Unis",
+    "description": "Effondrement du marché américain dû à la surproduction, chute d'Atari."
+  },
+  {
+    "ordre": 6,
+    "annee": 1985,
+    "evenement": "Sortie de Super Mario Bros. sur NES",
+    "description": "Sauve l'industrie et définit le genre du jeu de plateforme."
+  },
+  {
+    "ordre": 7,
+    "annee": 1989,
+    "evenement": "Lancement du Game Boy",
+    "description": "Première console portable à succès, popularisation du jeu portable."
+  },
+  {
+    "ordre": 8,
+    "annee": 2002,
+    "evenement": "Lancement de Xbox Live",
+    "description": "Révolutionne le multijoueur sur console avec un service en ligne."
+  },
+  {
+    "ordre": 9,
+    "annee": 2006,
+    "evenement": "Lancement de la Nintendo Wii",
+    "description": "Révolution dans le gameplay avec la détection de mouvement, grand succès grand public."
+  },
+  {
+    "ordre": 10,
+    "annee": 2020,
+    "evenement": "Explosion du jeu vidéo pendant la pandémie de COVID-19",
+    "description": "Jeux comme Animal Crossing: New Horizons connaissent un succès massif durant le confinement."
+  }
+]
