@@ -90,7 +90,7 @@
     return div;
   }
 
-  db.collection('consoles').orderBy('obtenue', 'desc').get().then(snapshot => {
+  db.collection('consoles').orderBy('year', 'desc').get().then(snapshot => {
     snapshot.forEach(doc => {
       const data = doc.data();
       consolesData.push({ ...data, id: doc.id });
